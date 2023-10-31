@@ -73,7 +73,8 @@ const ParameterTable* UFODynamics::getMyParameterTable()
     /* The table is closed off with NULL pointers for the variable
        name and MemberCall/VarProbe object. The description is used to
        give an overall description of the module. */
-    { NULL, NULL, "please give a description of this module"} };
+    { NULL, NULL,
+      "Nonsense dynamics for a UFO."} };
 
   return parameter_table;
 }
@@ -106,6 +107,10 @@ UFODynamics::UFODynamics(Entity* e, const char* part, const
   w_egomotion(getId(), NameSet(getEntity(), "ObjectMotion", part),
 	      "BaseObjectMotion", "ufo movement", Channel::Continuous,
 	      Channel::OnlyOneEntry),
+  // this channel is labeled with our entity name. 
+  w_world(getId(), NameSet("world", "BaseObjectMotion", ""),
+	  BaseObjectMotion::classname, getEntity(), Channel::Continuous,
+	  Channel::OneOrMoreEntries),
 
   // activity initialization
   // myclock(),
@@ -174,6 +179,7 @@ bool UFODynamics::isPrepared()
 
   CHECK_TOKEN(r_controls);
   CHECK_TOKEN(w_egomotion);
+  CHECK_TOKEN(w_world);
 
   // return result of checks
   return res;
@@ -280,6 +286,10 @@ void UFODynamics::doCalculation(const TimeSpec& ts)
     y.data().omega[ii] = body.X()[6+ii];
   }
   y.data().setquat(body.phi(), body.theta(), body.psi());
+
+  // copy this, so others see where we are (in multiplayer)
+  DataWriter<BaseObjectMotion> pub(w_world, ts);
+  pub.data() = y.data();
 
   if (snapshotNow()) {
     // keep a copy of the current state

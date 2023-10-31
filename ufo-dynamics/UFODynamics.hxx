@@ -62,8 +62,13 @@ private: // channel access
   /** Control input from the joystick */
   ChannelReadToken    r_controls;
 
-  /** Our viewpoint to send to the world view */
+  /** Our viewpoint to send to the world view, drives the location of
+      our eyes. */
   ChannelWriteToken   w_egomotion;
+
+  /** For sharing our position to the world view, so in multiplayer we
+      can be seen. */
+  ChannelWriteToken   w_world;
 
 private: // activity allocation
   /** You might also need a clock. Don't mis-use this, because it is
@@ -93,7 +98,7 @@ public: // construction and further specification
   /** Continued construction. This is called after all script
       parameters have been read and filled in, according to the
       parameter table. Your running environment, e.g. for OpenGL
-      drawing, is also prepared. Any lengty initialisations (like
+      drawing, is also prepared. Any lengthy initialisations (like
       reading the 4 GB of wind tables) should be done here.
       Return false if something in the parameters is wrong (by
       the way, it would help if you printed what!) May be deleted. */

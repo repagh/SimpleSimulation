@@ -48,7 +48,7 @@ private: // channel access
 private: // activity allocation
   /** You might also need a clock. Don't mis-use this, because it is
       generally better to trigger on the incoming channels */
-  //PeriodicAlarm        myclock;
+  PeriodicAlarm        myclock;
 
   /** Callback object for simulation calculation. */
   Callback<MonitorTeams>  cb1;

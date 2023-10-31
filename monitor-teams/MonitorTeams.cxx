@@ -68,8 +68,6 @@ MonitorTeams::MonitorTeams(Entity* e, const char* part, const
      part arguments. */
   Module(e, classname, part),
 
-  // initialize the data you need in your simulation or process
-
   // initialize the channel access tokens, check the documentation for the
   // various parameters. Some examples:
   r_announce(getId(), NameSet(getEntity(), ReplicatorInfo::classname, part),
@@ -77,9 +75,8 @@ MonitorTeams::MonitorTeams(Entity* e, const char* part, const
   r_world(getId(), NameSet(getEntity(), BaseObjectMotion::classname, part),
 	  BaseObjectMotion::classname, entry_any, Channel::Events),
 
-  // create a clock, if you need time based triggering
-  // instead of triggering on the incoming channels
-  // myclock(),
+  // clock
+  myclock(),
 
   // a callback object, pointing to the main calculation function
   cb1(this, &_ThisModule_::doCalculation),
@@ -89,7 +86,7 @@ MonitorTeams::MonitorTeams(Entity* e, const char* part, const
   do_notify(getId(), "print notification", &cb2, ps)
 {
   // connect the triggers for simulation
-  do_calc.setTrigger(r_world);
+  do_calc.setTrigger(myclock);
   do_notify.setTrigger(r_announce);
 }
 
@@ -98,7 +95,7 @@ bool MonitorTeams::complete()
   /* All your parameters have been set. You may do extended
      initialisation here. Return false if something is wrong. */
 
-  // immediate start notify
+  // immediately start the notify activity, will print any information
   do_notify.switchOn();
   return true;
 }
@@ -116,12 +113,7 @@ bool MonitorTeams::setTimeSpec(const TimeSpec& ts)
   if (ts.getValiditySpan() == 0) return false;
 
   // specify the timespec to the activity
-  do_calc.setTimeSpec(ts);
-  // or do this with the clock if you have it (don't do both!)
-  // myclock.changePeriodAndOffset(ts);
-
-  // do whatever else you need to process this in your model
-  // hint: ts.getDtInSeconds()
+  myclock.changePeriodAndOffset(ts);
 
   // return true if everything is acceptable
   return true;
@@ -173,42 +165,37 @@ void MonitorTeams::stopModule(const TimeSpec &time)
 // appropriate output
 void MonitorTeams::doCalculation(const TimeSpec& ts)
 {
-  // access the input
-  // example:
-  // try {
-  //   DataReader<MyData> u(r_mytoken, ts);
-  //   throttle = u.data().throttle;
-  //   de = u.data().de; ....
-  // }
-  // catch(Exception& e) {
-  //   // strange, there is no input. Should I try to continue or not?
-  // }
-  /* The above piece of code shows a block in which you try to catch
-     error conditions (exceptions) to handle the case in which the input
-     data is lost. This is not always necessary, if you normally do not
-     foresee such a condition, and you don t mind being stopped when
-     it happens, forget about the try/catch blocks. */
+  // reading all entries from the channel behind r_world. Note that
+  // another option would be to use a ChannelMonitor to watch for changes
+  // and use multiple access tokens, each specifically for one entry.
+  unsigned ecount = 0;
+  r_world.selectFirstEntry();
+  while (r_world.haveEntry()) {
+    ecount++;
+    try {
+      DataReader<BaseObjectMotion> om(r_world, ts);
+      std::cout << "Ufo " << r_world.getEntryLabel() << " now at "
+		<< om.data().xyz << std::endl;
+    }
+    catch (const NoDataAvailable& e) {
+      std::cout << "Ufo " << r_world.getEntryLabel() << " no data" << std::endl;
+    }
+    r_world.selectNextEntry();
+  }
 
-  // do the simulation or other calculations, one step
-
-  // DUECA applications are data-driven. From the time a module is switched
-  // on, it should produce data, so that modules "downstream" are
-  // activated
-  // access your output channel(s)
-  // example
-  // DataWriter<MyData2> y(w_mytoken, ts);
-
-  // write the output into the output channel, using the data writer
-  // y.data().var1 = something; ...
+  // This shows we looked.
+  std::cout << "There were " << ecount << " entries" << std::endl;
 }
 
 void MonitorTeams::doNotify(const TimeSpec& ts)
 {
-
+  while (r_announce.haveVisibleSets(ts)) {
+    DataReader<ReplicatorInfo> ri(r_announce, ts);
+    cout << ri.data();
+  }
 }
 
 // Make a TypeCreator object for this module, the TypeCreator
 // will check in with the script code, and enable the
 // creation of modules of this type
 static TypeCreator<MonitorTeams> a(MonitorTeams::getMyParameterTable());
-
