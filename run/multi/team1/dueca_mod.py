@@ -28,6 +28,9 @@ log_priority = dueca.PrioritySpec(1, 0)
 # priority of simulation, just above log
 sim_priority = dueca.PrioritySpec(2, 0)
 
+# peer communicaiton prio
+com_priority = dueca.PrioritySpec(3, 0)
+
 # nodes with a different priority scheme
 # control loading node has 0, 1, 2 and 3 as above and furthermore
 #               4 stick priority
@@ -47,6 +50,9 @@ display_timing = dueca.TimeSpec(0, 200)
 
 ## log a bit more economical, 25 Hz
 log_timing = dueca.TimeSpec(0, 400)
+
+## entity to be created later
+entity_name="team1"
 
 ## ---------------------------------------------------------------------
 ### the modules needed for dueca itself
@@ -176,6 +182,12 @@ if this_node_id == ecs_node:
             )
             )
     )
+
+    mymods.append(dueca.Module(
+        'channel-replicator-peer', "", com_priority).param(
+            port_re_use=True,
+            config_url="ws://127.0.0.1:8032/config"))
+
     filer = dueca.ReplayFiler("SIMPLE")
 
 # then combine in an entity (one "copy" per node)

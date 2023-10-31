@@ -31,6 +31,9 @@ log_priority = dueca.PrioritySpec(1, 0)
 # priority of simulation, just above log
 sim_priority = dueca.PrioritySpec(2, 0)
 
+# Not using logging, add communication there
+com_priority = log_priority
+
 # nodes with a different priority scheme
 # control loading node has 0, 1, 2 and 3 as above and furthermore
 #               4 stick priority
@@ -45,11 +48,17 @@ sim_priority = dueca.PrioritySpec(2, 0)
 # this is normally 100, giving 100 Hz timing
 sim_timing = dueca.TimeSpec(0, 100)
 
+# team monitoring really slow, like 1x per second
+mon_timing = dueca.TimeSpec(0, 10000)
+
 ## for now, display on 50 Hz
 display_timing = dueca.TimeSpec(0, 200)
 
 ## log a bit more economical, 25 Hz
 log_timing = dueca.TimeSpec(0, 400)
+
+## entity to be created later
+entity_name="central"
 
 ## ---------------------------------------------------------------------
 ### the modules needed for dueca itself
@@ -72,7 +81,7 @@ if this_node_id == ecs_node:
     # remove the quotes to enable DUSIME initial condition recording and
     # setting, and simulation recording and replay
     '''
-    for e in ("PHLAB",):
+    for e in (entity_name,):
         DUECA_mods.append(
             dueca.Module("initials-inventory", e, admin_priority).param(
                 reference_file=f"initials-{e}.toml",
@@ -91,44 +100,25 @@ if this_node_id == ecs_node:
 mymods = []
 
 if this_node_id == ecs_node:
+
+    # this simply prints joining of teams and current position
     mymods.append(dueca.Module(
-        "some-module-i-created", "", sim_priority).param(
-            set_timing = sim_timing,
+        "monitor-teams", "", sim_priority).param(
+            set_timing = mon_timing,
             check_timing = (10000, 20000)))
 
-    # Uncomment and adapt for web-based graph, see DUECA documentation.
-    # This also serves the static files for the default plotting application
-    # over http.
-    # adjust the priority if you need this for other, time-critical, data
-    #
-    # mymods.append(
-    #     dueca.Module(
-    #         "web-sockets-server", "", admin_priority).param(
-    #             ('set-timing', sim_timing),
-    #             ('check-timing', (5000, 9000)),
-    #             ('port', 8001),
-    #             ('info', ("endpoint", "MyData://PHLAB")),
-    #             ('write-and-read', ("plotconfig",
-    #                                 "ConfigFileRequest://dueca",
-    #                                 "ConfigFileData://dueca")),
-    #             ('http-port', 8000),
-    #             ('document-root', '/usr/share/dplotter/dist')))
+    # this is a standard DUECA module (from the "inter" library), that
+    # can connect to other DUECA processes, and replicate given channels
+    mymods.append(dueca.Module(
+        'channel-replicator-master', "", com_priority).param(
+            set_timing=sim_timing,
+            port_re_use=True,
+            watch_channels=("BaseObjectMotion://world", ),
+            message_size=1450,
+            replicator_information_channel=f"ReplicatorInfo://{entity_name}",
+            data_url="ws://127.0.0.1:8032/data",
+            config_url="ws://127.0.0.1:8032/config"))
 
-    # uncomment and adapt for HDF5 logging, see DUECA documentation
-    # mymods.append(
-    #     dueca.Module(
-    #         "hdf5-logger", "", log_priority).param(
-    #             ('set_timing', log_timing),
-    #             ('chunksize', 3000),
-    #             ('log_entry', ("MyData://PHLAB",
-    #                            "MyData", "/data/mydata"))))
-    #     )
-
-# etc, each node can have modules in its mymods list
-
-    # add a filer in this node for replay support
-    # filer = dueca.ReplayFiler("PHLAB")
-
-# then combine in an entity (one "copy" per node)
+# combine in an entity (one "copy" per node)
 if mymods:
-    myentity = dueca.Entity("PHLAB", mymods)
+    myentity = dueca.Entity(entity_name, mymods)

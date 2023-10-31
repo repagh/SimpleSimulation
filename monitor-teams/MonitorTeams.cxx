@@ -72,8 +72,9 @@ MonitorTeams::MonitorTeams(Entity* e, const char* part, const
   // various parameters. Some examples:
   r_announce(getId(), NameSet(getEntity(), ReplicatorInfo::classname, part),
 	     ReplicatorInfo::classname, 0, Channel::Events),
-  r_world(getId(), NameSet(getEntity(), BaseObjectMotion::classname, part),
-	  BaseObjectMotion::classname, entry_any, Channel::Events),
+  r_world(getId(), NameSet("world", BaseObjectMotion::classname, part),
+	  BaseObjectMotion::classname, entry_any, Channel::AnyTimeAspect,
+	  Channel::ZeroOrMoreEntries),
 
   // clock
   myclock(),
