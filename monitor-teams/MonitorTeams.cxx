@@ -174,7 +174,7 @@ void MonitorTeams::doCalculation(const TimeSpec& ts)
   while (r_world.haveEntry()) {
     ecount++;
     try {
-      DataReader<BaseObjectMotion> om(r_world, ts);
+      DataReader<BaseObjectMotion,MatchIntervalStartOrEarlier> om(r_world);
       std::cout << "Ufo " << r_world.getEntryLabel() << " now at "
 		<< om.data().xyz << std::endl;
     }
