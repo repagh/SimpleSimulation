@@ -1,4 +1,4 @@
-d## -*-python-*-
+## -*-python-*-
 ## this is an example dueca_mod.py file, for you to start out with and adapt
 ## according to your needs. Note that you need a dueca_mod.py file only for the
 ## node with number 0
@@ -28,6 +28,9 @@ log_priority = dueca.PrioritySpec(1, 0)
 # priority of simulation, just above log
 sim_priority = dueca.PrioritySpec(2, 0)
 
+# peer communication prio
+com_priority = dueca.PrioritySpec(3, 0)
+
 # nodes with a different priority scheme
 # control loading node has 0, 1, 2 and 3 as above and furthermore
 #               4 stick priority
@@ -55,7 +58,9 @@ if this_node_id == ecs_node:
     # create a list of modules:
     DUECA_mods = []
     DUECA_mods.append(dueca.Module("dusime", "", admin_priority))
-    DUECA_mods.append(dueca.Module("dueca-view", "", admin_priority))
+    DUECA_mods.append(dueca.Module("dueca-view", "", admin_priority).param(
+        glade_file = "dusime.ui",
+        position_size = (560, 460)))
     DUECA_mods.append(dueca.Module("activity-view", "", admin_priority))
     DUECA_mods.append(dueca.Module("timing-view", "", admin_priority))
     DUECA_mods.append(dueca.Module("log-view", "", admin_priority))
@@ -89,46 +94,48 @@ if this_node_id == ecs_node:
     mymods.append(
         dueca.Module(
             "flexi-stick", "", sim_priority).param(
-            set_timing = sim_timing,
-            enable_record_replay = True,
-            check_timing = (1000, 2000)).param(
-                # virtual, gtk driven stick
-                ('add-virtual', ("logi", "team2.ui"),
-                # axes 0 and 1, roll and pitch
-                ('add-virtual-slider-2d',
-                 (15, 15, 185, 185, 3)),
-                # axis 2, yaw
-                ('add-virtual-slider',
-                 (10, 195, 190, 195, 3)),
-                # axis 3, throttle
-                ('add-virtual-slider',
-                 (5, 190, 5, 10, 3, 1)),
+                set_timing = sim_timing,
+                enable_record_replay = True,
+                check_timing = (1000, 2000)).param(
+                    # virtual, gtk driven stick
+                    ('add-virtual', ("logi", "team2.ui")),
+                    # axes 0 and 1, roll and pitch
+                    ('add-virtual-slider-2d',
+                     (15, 15, 185, 185, 3)),
+                    # axis 2, yaw
+                    ('add-virtual-slider',
+                     (10, 195, 190, 195, 3)),
+                    # axis 3, throttle
+                    ('add-virtual-slider',
+                     (5, 190, 5, 10, 3, 1)),
+                    # place it on the screen
+                    ('virtual-position-size', (265, 370)),
 
-                # by default, axes go from -1 to 1, convert throttle to
-                # run from -1 to 5 (slow back-up to forward 5m/s), with
-                # a polynomial. The throttle is on axis 2 of the stick
-                ('create_poly', ('throttle', 'logi.a[3]')),
-                ('poly_params', (2, -3)),
-                ('create_poly', ('roll', 'logi.a[0]')),
-                ('poly_params', (0, -1)),
-                ('create_poly', ('pitch', 'logi.a[1]')),
-                ('poly_params', (0, -1)),
-                ('create_poly', ('yaw', 'logi.a[2]')),
-                ('poly_params', (0, -1)),
+                    # by default, axes go from -1 to 1, convert throttle to
+                    # run from -1 to 5 (slow back-up to forward 5m/s), with
+                    # a polynomial. The throttle is on axis 2 of the stick
+                    ('create_poly', ('throttle', 'logi.a[3]')),
+                    ('poly_params', (2, -3)),
+                    ('create_poly', ('roll', 'logi.a[0]')),
+                    ('poly_params', (0, -1)),
+                    ('create_poly', ('pitch', 'logi.a[1]')),
+                    ('poly_params', (0, -1)),
+                    ('create_poly', ('yaw', 'logi.a[2]')),
+                    ('poly_params', (0, -1)),
 
-                # define that we write a channel
-                ('add_channel',
-                 ('controls',              # variable
-                  'ControlInput://SIMPLE', # channel name
-                  'ControlInput',          # data type
-                  'control input')),       # label
+                    # define that we write a channel
+                    ('add_channel',
+                     ('controls',              # variable
+                      'ControlInput://SIMPLE', # channel name
+                      'ControlInput',          # data type
+                      'control input')),       # label
 
-                # link axis 0 to control roll, etc, etc
-                ("add_link", ("controls.roll", "roll")),
-                ("add_link", ("controls.pitch", "pitch")),
-                ("add_link", ("controls.yaw", "yaw")),
-                ("add_link", ("controls.throttle", "throttle"))
-            )
+                    # link axis 0 to control roll, etc, etc
+                    ("add_link", ("controls.roll", "roll")),
+                    ("add_link", ("controls.pitch", "pitch")),
+                    ("add_link", ("controls.yaw", "yaw")),
+                    ("add_link", ("controls.throttle", "throttle"))
+                )
     )
 
     # our new dynamics module
@@ -147,10 +154,10 @@ if this_node_id == ecs_node:
             dueca.OSGViewer().param(
                 # set up window
                 ('add_window', 'front'),
-                ('window_size+pos', (800, 600, 10, 10)),
+                ('window_size+pos', (200, 150, 265, 370+240)),
                 ('add_viewport', 'front'),
                 ('viewport_window', 'front'),
-                ('viewport_pos+size', (0, 0, 800, 600)),
+                ('viewport_pos+size', (0, 0, 200, 150)),
 
                 # add visual objects (classes, then instantiation)
                 ('add-object-class-data',
@@ -176,6 +183,11 @@ if this_node_id == ecs_node:
             )
             )
     )
+    mymods.append(dueca.Module(
+        'channel-replicator-peer', "", com_priority).param(
+            port_re_use=True,
+            config_url="ws://127.0.0.1:8032/config"))
+
     filer = dueca.ReplayFiler("SIMPLE")
 
 # then combine in an entity (one "copy" per node)

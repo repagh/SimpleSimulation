@@ -1,4 +1,4 @@
-# -*-bash-*-
+# -*-sh-*-
 # this file creates all links to files in the data directory needed for
 # running the application on a specific machine.
 
@@ -20,9 +20,13 @@ else
    ln -sf ../../../dueca_run.x .
 fi
 
-# active only on node 0, when a start file is found, link the start
-# file to a start script folder (default ${HOME}/scripts)
-dueca-startlink --scriptdir=${HOME}/scripts
+# Added for SimpleSimulation, link .obj and .mtl files for the visual
+ln -sf ../../../../WorldView/icy-world/*.obj .
+ln -sf ../../../../WorldView/icy-world/*.mtl .
 
 # gui file with separate name, for automated testing
-ln -s $DATADIR/team1.ui .
+ln -sf $DATADIR/team2.ui .
+
+# copy a gui file for DUECA
+sed -e 's@DUECA/DUSIME@TEAM 2@' `dueca-config --path-datafiles`/dusime.glade3 \
+    >dusime.ui

@@ -67,7 +67,8 @@ if this_node_id == ecs_node:
     # create a list of modules:
     DUECA_mods = []
     DUECA_mods.append(dueca.Module("dusime", "", admin_priority))
-    DUECA_mods.append(dueca.Module("dueca-view", "", admin_priority))
+    DUECA_mods.append(dueca.Module("dueca-view", "", admin_priority).param(
+        position_size = (0, 10)))
     DUECA_mods.append(dueca.Module("activity-view", "", admin_priority))
     DUECA_mods.append(dueca.Module("timing-view", "", admin_priority))
     DUECA_mods.append(dueca.Module("log-view", "", admin_priority))
@@ -111,6 +112,7 @@ if this_node_id == ecs_node:
     # can connect to other DUECA processes, and replicate given channels
     mymods.append(dueca.Module(
         'channel-replicator-master', "", com_priority).param(
+            timing_gain=0.00001,
             set_timing=sim_timing,
             port_re_use=True,
             watch_channels=("BaseObjectMotion://world", ),

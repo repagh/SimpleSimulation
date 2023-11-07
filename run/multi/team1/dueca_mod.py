@@ -28,7 +28,7 @@ log_priority = dueca.PrioritySpec(1, 0)
 # priority of simulation, just above log
 sim_priority = dueca.PrioritySpec(2, 0)
 
-# peer communicaiton prio
+# peer communication prio
 com_priority = dueca.PrioritySpec(3, 0)
 
 # nodes with a different priority scheme
@@ -61,7 +61,9 @@ if this_node_id == ecs_node:
     # create a list of modules:
     DUECA_mods = []
     DUECA_mods.append(dueca.Module("dusime", "", admin_priority))
-    DUECA_mods.append(dueca.Module("dueca-view", "", admin_priority))
+    DUECA_mods.append(dueca.Module("dueca-view", "", admin_priority).param(
+        glade_file = "dusime.ui",
+        position_size = (560, 10)))
     DUECA_mods.append(dueca.Module("activity-view", "", admin_priority))
     DUECA_mods.append(dueca.Module("timing-view", "", admin_priority))
     DUECA_mods.append(dueca.Module("log-view", "", admin_priority))
@@ -109,6 +111,8 @@ if this_node_id == ecs_node:
                 # axis 3, throttle
                 ('add-virtual-slider',
                  (5, 190, 5, 10, 3, 1)),
+                # place it on the screen
+                ('virtual-position-size', (0, 370)),
 
                 # by default, axes go from -1 to 1, convert throttle to
                 # run from -1 to 5 (slow back-up to forward 5m/s), with
@@ -153,10 +157,10 @@ if this_node_id == ecs_node:
             dueca.OSGViewer().param(
                 # set up window
                 ('add_window', 'front'),
-                ('window_size+pos', (800, 600, 10, 10)),
+                ('window_size+pos', (200, 150, 0, 370+240)),
                 ('add_viewport', 'front'),
                 ('viewport_window', 'front'),
-                ('viewport_pos+size', (0, 0, 800, 600)),
+                ('viewport_pos+size', (0, 0, 200, 150)),
 
                 # add visual objects (classes, then instantiation)
                 ('add-object-class-data',
