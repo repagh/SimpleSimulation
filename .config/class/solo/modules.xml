@@ -14,9 +14,9 @@
      revision, add that in the optional version field.
 -->
 <machine xmlns="https://dueca.tudelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://dueca.tudelft.nl modules.xsd">
-  <project>
-    <url>remote:///SimpleSimulation.git</url>
+  <project main="true">
     <module>ufo-dynamics</module>
+    <module>monitor-teams</module>
   </project>
   <project>
     <url>dgrpub:///FlexiStick.git</url>

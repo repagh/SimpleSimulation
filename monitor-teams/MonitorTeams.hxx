@@ -1,111 +1,89 @@
 /* ------------------------------------------------------------------   */
-/*      item            : UFODynamics.hxx
+/*      item            : MonitorTeams.hxx
         made by         : repa
-        from template   : DusimeModuleTemplate.hxx (2022.06)
-        date            : Mon Jun 20 17:24:08 2022
+        from template   : DuecaModuleTemplate.hxx (2022.06)
+        date            : Mon Oct 30 16:22:37 2023
         category        : header file
         description     :
-        changes         : Mon Jun 20 17:24:08 2022 first version
+        changes         : Mon Oct 30 16:22:37 2023 first version
         language        : C++
         copyright       : (c)
 */
 
-#ifndef UFODynamics_hxx
-#define UFODynamics_hxx
+#ifndef MonitorTeams_hxx
+#define MonitorTeams_hxx
 
 // include the dusime header
-#include <dusime.h>
+#include <dueca.h>
 USING_DUECA_NS;
 
 // This includes headers for the objects that are sent over the channels
 #include "comm-objects.h"
 
 // include headers for functions/classes you need in the module
-#include <array>
-#include <extra/RigidBody.hxx>
-#include <extra/integrate_rungekutta.hxx>
 
-/** A module.
+
+/** Monitor joining, leaving and updates of ufo vehicles.
 
     The instructions to create an module of this class from the Scheme
     script are:
 
-    \verbinclude ufo-dynamics.scm
-*/
-class UFODynamics: public SimulationModule
+    \verbinclude monitor-teams.scm
+ */
+class MonitorTeams: public Module
 {
   /** self-define the module type, to ease writing the parameter table */
-  typedef UFODynamics _ThisModule_;
+  typedef MonitorTeams _ThisModule_;
 
 private: // simulation data
   // declare the data you need in your simulation
 
-  /// Rigid body dynamics
-  RigidBody            body;
-
-  /// Workspace for the integration
-  RungeKuttaWorkspace  ws;
-
-  /// Time constant for following rotational inputs
-  double               tau_r;
-
-  /// Time constant for following linear inputs
-  double               tau_v;
-
-private: // snapshot data
-  /// temporary storage for the 13 state elements
-  std::array<double,12> snapcopy;
-
 private: // channel access
-  // declare access tokens for all the channels you read and write
-  // examples:
-  /** Control input from the joystick */
-  ChannelReadToken    r_controls;
+  /** Read information from the interconnector on joining/leaving peers */
+  ChannelReadToken    r_announce;
 
-  /** Our viewpoint to send to the world view, drives the location of
-      our eyes. */
-  ChannelWriteToken   w_egomotion;
-
-  /** For sharing our position to the world view, so in multiplayer we
-      can be seen. */
-  ChannelWriteToken   w_world;
+  /** Read the current state of the peer ufo's flying around */
+  ChannelReadToken    r_world;
 
 private: // activity allocation
   /** You might also need a clock. Don't mis-use this, because it is
       generally better to trigger on the incoming channels */
-  //PeriodicAlarm        myclock;
+  PeriodicAlarm        myclock;
 
   /** Callback object for simulation calculation. */
-  Callback<UFODynamics>  cb1;
+  Callback<MonitorTeams>  cb1;
+
+  /** Callback object for simulation calculation. */
+  Callback<MonitorTeams>  cb2;
 
   /** Activity for simulation calculation. */
   ActivityCallback      do_calc;
 
+  /** Activity for simulation calculation. */
+  ActivityCallback      do_notify;
+
 public: // class name and trim/parameter tables
   /** Name of the module. */
   static const char* const           classname;
-
-  /** Return the initial condition table. */
-  static const IncoTable*            getMyIncoTable();
 
   /** Return the parameter table. */
   static const ParameterTable*       getMyParameterTable();
 
 public: // construction and further specification
   /** Constructor. Is normally called from scheme/the creation script. */
-  UFODynamics(Entity* e, const char* part, const PrioritySpec& ts);
+  MonitorTeams(Entity* e, const char* part, const PrioritySpec& ts);
 
   /** Continued construction. This is called after all script
       parameters have been read and filled in, according to the
       parameter table. Your running environment, e.g. for OpenGL
-      drawing, is also prepared. Any lengthy initialisations (like
+      drawing, is also prepared. Any lengty initialisations (like
       reading the 4 GB of wind tables) should be done here.
       Return false if something in the parameters is wrong (by
       the way, it would help if you printed what!) May be deleted. */
   bool complete();
 
   /** Destructor. */
-  ~UFODynamics();
+  ~MonitorTeams();
 
   // add here the member functions you want to be called with further
   // parameters. These are then also added in the parameter table
@@ -132,16 +110,8 @@ public: // the member functions that are called for activities
   /** the method that implements the main calculation. */
   void doCalculation(const TimeSpec& ts);
 
-public: // member functions for cooperation with DUSIME
-  /** For the Snapshot capability, fill the snapshot "snap" with the
-      data saved at a point in your simulation (if from_trim is false)
-      or with the state data calculated in the trim calculation (if
-      from_trim is true). */
-  void fillSnapshot(const TimeSpec& ts,
-                    Snapshot& snap, bool from_trim) final;
-
-  /** Restoring the state of the simulation from a snapshot. */
-  void loadSnapshot(const TimeSpec& t, const Snapshot& snap) final;
+  /** print a notification about a leaving or joining peer */
+  void doNotify(const TimeSpec& ts);
 };
 
 #endif

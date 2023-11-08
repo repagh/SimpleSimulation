@@ -1,0 +1,32 @@
+# -*-sh-*-
+# this file creates all links to files in the data directory needed for
+# running the application on a specific machine.
+
+# standard folder with project-wide data
+DATADIR=../../run-data
+
+# example for project-wide configuration (.cnf) files
+# ln -sf $DATADIR/*.cnf .
+
+# create a folder for run log history
+if [ ! -d runlogs ]; then
+   mkdir runlogs
+fi
+
+# convenience link to executable (cmake or legacy)
+if [ -d ../../../build ]; then
+   ln -sf ../../../build/dueca_run.x .
+else
+   ln -sf ../../../dueca_run.x .
+fi
+
+# Added for SimpleSimulation, link .obj and .mtl files for the visual
+ln -sf ../../../../WorldView/icy-world/*.obj .
+ln -sf ../../../../WorldView/icy-world/*.mtl .
+
+# gui file with separate name, for automated testing
+ln -sf $DATADIR/team2.ui .
+
+# copy a gui file for DUECA
+sed -e 's@DUECA/DUSIME@TEAM 2@' `dueca-config --path-datafiles`/dusime.glade3 \
+    >dusime.ui

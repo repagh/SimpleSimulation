@@ -14,11 +14,10 @@
      revision, add that in the optional version field.
 -->
 <machine xmlns="https://dueca.tudelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://dueca.tudelft.nl modules.xsd">
-  <project>
-    <url>git@gitlab.tudelft.nl:rvanpaassen/SimpleSimulation.git</url>
+  <project main="true">
   </project>
   <project>
-    <url>git@gitlab.tudelft.nl:ae-cs-dueca-base/WorldView.git</url>
+    <url>drgpub:///WorldView.git</url>
     <module>WorldView</module>
     <module>OSGViewer</module>
     <module>SpecificationBase</module>

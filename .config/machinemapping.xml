@@ -6,4 +6,7 @@
   <node name="solo" machineclass="solo" sparse-checkout="false"/>
   <node name="host" machineclass="solo" sparse-checkout="true"/>
   <node name="igtest" machineclass="ig" sparse-checkout="true"/>
+  <node name="central" machineclass="solo" sparse-checkout="true"/>
+  <node name="team1" machineclass="solo" sparse-checkout="true"/>
+  <node name="team2" machineclass="solo" sparse-checkout="true"/>
 </nodes>
