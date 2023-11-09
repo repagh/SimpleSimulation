@@ -159,6 +159,7 @@ if this_node_id == ecs_node:
                 ('add_viewport', 'front'),
                 ('viewport_window', 'front'),
                 ('viewport_pos+size', (0, 0, 200, 150)),
+                ('eye-offset', (-0.5, 0.0, -1.7)),
 
                 # add visual objects (classes, then instantiation)
                 ('add-object-class-data',
