@@ -76,7 +76,7 @@ if this_node_id == ecs_node:
 
     # remove the quotes to enable DUSIME initial condition recording and
     # setting, and simulation recording and replay
-    for e in ("SIMPLE",):
+    for e in ("team1",):
         DUECA_mods.append(
             dueca.Module("initials-inventory", e, admin_priority).param(
                 # reference_file=f"initials-{e}.toml",
@@ -129,7 +129,7 @@ if this_node_id == ecs_node:
                 # define that we write a channel
                 ('add_channel',
                  ('controls',              # variable
-                  'ControlInput://SIMPLE', # channel name
+                  'ControlInput://team1', # channel name
                   'ControlInput',          # data type
                   'control input')),       # label
 
@@ -189,11 +189,10 @@ if this_node_id == ecs_node:
 
     mymods.append(dueca.Module(
         'channel-replicator-peer', "", com_priority).param(
-            port_re_use=True,
             config_url="ws://127.0.0.1:8032/config"))
 
-    filer = dueca.ReplayFiler("SIMPLE")
+    filer = dueca.ReplayFiler("team1")
 
 # then combine in an entity (one "copy" per node)
 if mymods:
-    myentity = dueca.Entity("SIMPLE", mymods)
+    myentity = dueca.Entity("team1", mymods)
