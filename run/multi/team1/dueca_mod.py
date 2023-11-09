@@ -153,6 +153,7 @@ if this_node_id == ecs_node:
             "world-view", "", admin_priority).param(
             set_timing = display_timing,
             check_timing = (8000, 9000),
+            add_world_information_channel = ("BaseObjectMotion://world",),
             set_viewer =
             dueca.OSGViewer().param(
                 # set up window
@@ -161,7 +162,7 @@ if this_node_id == ecs_node:
                 ('add_viewport', 'front'),
                 ('viewport_window', 'front'),
                 ('viewport_pos+size', (0, 0, 200, 150)),
-
+                ('eye-offset', (0.0, 0.0, -2)),
                 # add visual objects (classes, then instantiation)
                 ('add-object-class-data',
                  ("static:sunlight", "sunlight", "static-light")),
@@ -182,8 +183,19 @@ if this_node_id == ecs_node:
                 # make the objects
                 ('static-object', ('static:sunlight', 'sunlight')),
                 ('static-object', ('static:terrain', 'terrain')),
-                ('static-object', ('centered:skydome', 'skydome'))
-            )
+                ('static-object', ('centered:skydome', 'skydome')),
+
+                # object class for the teams
+                ('add-object-class-data',
+                 ('BaseObjectMotion:team1', 'Team One', 'moving',
+                  'platillo.obj')),
+                ('add-object-class-data',
+                 ('BaseObjectMotion:team2', 'Team Two', 'moving',
+                  'platillo.obj')),
+                ('add-object-class-data',
+                 ('BaseObjectMotion', 'Team #', 'moving',
+                  'platillo.obj')),
+             )
             )
     )
 
