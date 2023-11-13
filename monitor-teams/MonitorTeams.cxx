@@ -113,7 +113,7 @@ bool MonitorTeams::setTimeSpec(const TimeSpec& ts)
   // a time span of 0 is not acceptable
   if (ts.getValiditySpan() == 0) return false;
 
-  // specify the timespec to the activity
+  // specify the timespec to the clock
   myclock.changePeriodAndOffset(ts);
 
   // return true if everything is acceptable
@@ -177,6 +177,9 @@ void MonitorTeams::doCalculation(const TimeSpec& ts)
       DataReader<BaseObjectMotion,MatchIntervalStartOrEarlier> om(r_world);
       std::cout << "Ufo " << r_world.getEntryLabel() << " now at "
 		<< om.data().xyz << std::endl;
+      std::cout << "Current tick " << ts.getValidityStart()
+		<< ", data generated at "
+		<< om.timeSpec().getValidityStart() << std::endl; 
     }
     catch (const NoDataAvailable& e) {
       std::cout << "Ufo " << r_world.getEntryLabel() << " no data" << std::endl;
@@ -190,10 +193,8 @@ void MonitorTeams::doCalculation(const TimeSpec& ts)
 
 void MonitorTeams::doNotify(const TimeSpec& ts)
 {
-  while (r_announce.haveVisibleSets(ts)) {
-    DataReader<ReplicatorInfo> ri(r_announce, ts);
-    cout << ri.data();
-  }
+  DataReader<ReplicatorInfo> ri(r_announce, ts);
+  cout << ri.data();
 }
 
 // Make a TypeCreator object for this module, the TypeCreator

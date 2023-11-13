@@ -26,6 +26,8 @@ ln -sf ../../../../WorldView/icy-world/*.mtl .
 
 # gui file with separate name, for automated testing
 ln -sf $DATADIR/team2.ui .
+ln -sf $DATADIR/platillo.obj .
+ln -sf $DATADIR/platillo.mtl .
 
 # copy a gui file for DUECA
 sed -e 's@DUECA/DUSIME@TEAM 2@' `dueca-config --path-datafiles`/dusime.glade3 \

@@ -76,7 +76,7 @@ if this_node_id == ecs_node:
 
     # remove the quotes to enable DUSIME initial condition recording and
     # setting, and simulation recording and replay
-    for e in ("SIMPLE",):
+    for e in ("team1",):
         DUECA_mods.append(
             dueca.Module("initials-inventory", e, admin_priority).param(
                 # reference_file=f"initials-{e}.toml",
@@ -129,7 +129,7 @@ if this_node_id == ecs_node:
                 # define that we write a channel
                 ('add_channel',
                  ('controls',              # variable
-                  'ControlInput://SIMPLE', # channel name
+                  'ControlInput://team1', # channel name
                   'ControlInput',          # data type
                   'control input')),       # label
 
@@ -153,6 +153,7 @@ if this_node_id == ecs_node:
             "world-view", "", admin_priority).param(
             set_timing = display_timing,
             check_timing = (8000, 9000),
+            add_world_information_channel = ("BaseObjectMotion://world",),
             set_viewer =
             dueca.OSGViewer().param(
                 # set up window
@@ -161,7 +162,8 @@ if this_node_id == ecs_node:
                 ('add_viewport', 'front'),
                 ('viewport_window', 'front'),
                 ('viewport_pos+size', (0, 0, 200, 150)),
-
+                ('eye-offset', (-0.6, 0.0, -1.7)),
+                
                 # add visual objects (classes, then instantiation)
                 ('add-object-class-data',
                  ("static:sunlight", "sunlight", "static-light")),
@@ -182,18 +184,28 @@ if this_node_id == ecs_node:
                 # make the objects
                 ('static-object', ('static:sunlight', 'sunlight')),
                 ('static-object', ('static:terrain', 'terrain')),
-                ('static-object', ('centered:skydome', 'skydome'))
-            )
+                ('static-object', ('centered:skydome', 'skydome')),
+
+                # object class for the teams
+                ('add-object-class-data',
+                 ('BaseObjectMotion:team1', 'Team One', 'moving',
+                  'platillo.obj')),
+                ('add-object-class-data',
+                 ('BaseObjectMotion:team2', 'Team Two', 'moving',
+                  'platillo.obj')),
+                ('add-object-class-data',
+                 ('BaseObjectMotion', 'Team #', 'moving',
+                  'platillo.obj')),
+             )
             )
     )
 
     mymods.append(dueca.Module(
         'channel-replicator-peer', "", com_priority).param(
-            port_re_use=True,
             config_url="ws://127.0.0.1:8032/config"))
 
-    filer = dueca.ReplayFiler("SIMPLE")
+    filer = dueca.ReplayFiler("team1")
 
 # then combine in an entity (one "copy" per node)
 if mymods:
-    myentity = dueca.Entity("SIMPLE", mymods)
+    myentity = dueca.Entity("team1", mymods)
