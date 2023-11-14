@@ -10,6 +10,9 @@
 host_node = 0   # local, send peer
 ig_node = 1     # also local, send master
 
+## when true, does a gui stick
+gui_stick = True
+
 ## priority set-up
 # normal nodes: 0 administration
 #               1 hdf5 logging
@@ -84,52 +87,75 @@ if this_node_id == host_node:
 mymods = []
 
 if this_node_id == host_node:
+
+    if gui_stick:
+        stick_defines = (
+            # virtual, gtk driven stick
+            ('add-virtual', ("logi",)),
+            # axes 0 and 1, roll and pitch
+            ('add-virtual-slider-2d',
+             (15, 15, 185, 185, 3)),
+            # axis 2, yaw
+            ('add-virtual-slider',
+             (10, 195, 190, 195, 3)),
+            # axis 3, throttle
+            ('add-virtual-slider',
+             (5, 190, 5, 10, 3, 1)),
+            # place it on the screen
+            ('virtual-position-size', (0, 370))
+        )
+    else:
+        stick_defines = (
+            ('add_device', "logi:0"),
+        )
+    print("stick defines", stick_defines)
+
     mymods.append(
         dueca.Module(
             "flexi-stick", "", sim_priority).param(
-            set_timing = sim_timing,
-            enable_record_replay = True,
-            check_timing = (1000, 2000)).param(
-            # logitech stick, first SDL device
-            ('add_device', "logi:0"),
+                set_timing = sim_timing,
+                enable_record_replay = True,
+                check_timing = (1000, 2000)).param(
+                    *stick_defines,
 
-            # by default, axes go from -1 to 1, convert throttle to
-            # run from -1 to 5 (slow back-up to forward 5m/s), with
-            # a polynomial. The throttle is on axis 2 of the stick
-            ('create_poly', ('throttle', 'logi.a[3]')),
-            ('poly_params', (2, -3)),
-            ('create_poly', ('roll', 'logi.a[0]')),
-            ('poly_params', (0, -1)),
-            ('create_poly', ('pitch', 'logi.a[1]')),
-            ('poly_params', (0, -1)),
-            ('create_poly', ('yaw', 'logi.a[2]')),
-            ('poly_params', (0, -1)),
+                # by default, axes go from -1 to 1, convert throttle to
+                # run from -1 to 5 (slow back-up to forward 5m/s), with
+                # a polynomial. The throttle is on axis 2 of the stick
+                ('create_poly', ('throttle', 'logi.a[3]')),
+                ('poly_params', (2, -3)),
+                ('create_poly', ('roll', 'logi.a[0]')),
+                ('poly_params', (0, -1)),
+                ('create_poly', ('pitch', 'logi.a[1]')),
+                ('poly_params', (0, -1)),
+                ('create_poly', ('yaw', 'logi.a[2]')),
+                ('poly_params', (0, -1)),
 
-            # define that we write a channel
-            ('add_channel',
-             ('controls',              # variable
-              'ControlInput://SIMPLE', # channel name
-              'ControlInput',          # data type
-              'control input')),       # label
+                # define that we write a channel
+                ('add_channel',
+                 ('controls',              # variable
+                  'ControlInput://SIMPLE', # channel name
+                  'ControlInput',          # data type
+                  'control input')),       # label
 
-            # link axis 0 to control roll, etc, etc
-            ("add_link", ("controls.roll", "roll")),
-            ("add_link", ("controls.pitch", "pitch")),
-            ("add_link", ("controls.yaw", "yaw")),
-            ("add_link", ("controls.throttle", "throttle"))
+                # link axis 0 to control roll, etc, etc
+                ("add_link", ("controls.roll", "roll")),
+                ("add_link", ("controls.pitch", "pitch")),
+                ("add_link", ("controls.yaw", "yaw")),
+                ("add_link", ("controls.throttle", "throttle"))
             )
     )
-
+    print("made stick")
     # our new dynamics module
     mymods.append(dueca.Module(
         "ufo-dynamics", "", sim_priority).param(
             set_timing = sim_timing,
             check_timing = (1000, 2000)))
 
+    print("made dynamics")
     # records the inputs from the stick
     filer = dueca.ReplayFiler("SIMPLE")
 
-    
+
 if this_node_id == ig_node:
     # the visual output
     mymods.append(
@@ -141,7 +167,7 @@ if this_node_id == ig_node:
             dueca.OSGViewer().param(
                 # set up window
                 ('add_window', 'front'),
-                ('window_size+pos', (800, 600, 10, 10)),
+                ('window_size+pos', (800, 600, 200, 300)),
                 ('add_viewport', 'front'),
                 ('viewport_window', 'front'),
                 ('viewport_pos+size', (0, 0, 800, 600)),
@@ -170,8 +196,7 @@ if this_node_id == ig_node:
             )
             )
     )
-    
+
 # then combine in an entity (one "copy" per node)
 if mymods:
     myentity = dueca.Entity("SIMPLE", mymods)
-
