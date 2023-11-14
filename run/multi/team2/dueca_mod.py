@@ -154,10 +154,10 @@ if this_node_id == ecs_node:
             set_viewer =
             dueca.OSGViewer().param(
                 # set up window
-                ('add_window', 'front'),
+                ('add_window', 'team2'),
                 ('window_size+pos', (200, 150, 265, 370+240)),
                 ('add_viewport', 'front'),
-                ('viewport_window', 'front'),
+                ('viewport_window', 'team2'),
                 ('viewport_pos+size', (0, 0, 200, 150)),
                 ('eye-offset', (-0.5, 0.0, -1.7)),
 
