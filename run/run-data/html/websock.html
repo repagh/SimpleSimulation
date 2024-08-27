@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <div> Configuration <span id="configuration"></span> </div>
+    <div> Endpoint info <span id="endpointinfo"></span> </div>
+    <div> Data
+    <span Current position data:</span>
+    <span id="data_field_x">X position</span>,
+    <span id="data_field_y">Y position</span>,
+    <span id="data_field_z">Z position</span>
+    </div>
+    <script type="text/javascript">
+      let confsock = new WebSocket("ws://127.0.0.1:8001/configuration");
+      var infosock;
+      confsock.onmessage = function(ev) {
+	  document.getElementById("configuration").innerHTML = ev.data;
+	  infosock = new WebSocket("ws://127.0.0.1:8001/info/motion");
+	  infosock.onmessage = function(ev) {
+	      console.log("endpoint info", ev.data);
+	      document.getElementById("endpointinfo").innerHTML = ev.data;
+	  }
+
+      }
+      confsock.onclose = function(ev) {
+	  console.log("configuration closed")
+      }
+      
+      let socket = new WebSocket("ws://127.0.0.1:8001/read/motion?entry=0");
+      console.log("opened socket")
+      socket.onmessage = function(ev) {
+	  console.log("new data", ev.data);
+	  let motion = JSON.parse(ev.data);
+	  document.getElementById("data_field_x").innerHTML = motion.x + "";
+	  document.getElementById("data_field_y").innerHTML = motion.y + "";
+	  document.getElementById("data_field_z").innerHTML = motion.z + "";
+      }
+
+      socket.onclose = function(ev) {
+	  console.log("close called")
+	  if (ev.wasClean) {
+	      alert(`Connection closed cleanly, code=${ev.code}, reason={ev.reason}`);
+	  }
+	  else {
+	      alert(`Connection died, code={ev.code}`);
+	  }
+      }
+
+      socket.onerror = function(ev) {
+	  alert(`Socket error ${ev.message}`);
+      }
+    </script>
+  </body>
+</html>

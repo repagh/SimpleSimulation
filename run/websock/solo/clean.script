@@ -1,0 +1,9 @@
+# -*-bash-*-
+# this file cleans all temporary run files and also the symbolic links
+# from the data directory
+
+# clean dueca stuff
+clean-dueca-rundir
+
+# clean symbolic links
+find . -type l -exec rm {} \;
