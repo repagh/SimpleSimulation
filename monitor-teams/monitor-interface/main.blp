@@ -1,0 +1,84 @@
+using Gtk 4.0;
+
+Window welcome {
+  title: "gtk ui test window";
+
+  Box {
+    orientation: vertical;
+
+    Box tools {
+      orientation: horizontal;
+
+      CheckButton mw_a_choice {
+        label: "check";
+      }
+
+      DropDown mw_the_drop {
+        enable-search: true;
+        selected: 0;
+
+        model: StringList {
+          strings [
+            "Yes",
+            "No",
+            "Maybe",
+          ]
+        };
+      }
+
+      DropDown mw_intchoice {
+        selected: 0;
+
+        model: StringList {
+          strings [
+            "-1",
+            "0",
+            "1",
+            "2",
+            "3",
+          ]
+        };
+      }
+
+      SpinButton mw_the_spin {
+        digits: 2;
+
+        adjustment: Adjustment {
+          lower: 0;
+          upper: 5;
+          step-increment: 1;
+          value: 0;
+        };
+      }
+
+      Button button_send {
+        label: "send";
+      }
+    }
+
+    ScrolledWindow {
+      ColumnView teams {
+        ColumnViewColumn {
+          title: "Team";
+          expand: true;
+
+          factory: SignalListItemFactory fact_team {};
+        }
+
+        ColumnViewColumn {
+          title: "X Pos";
+          expand: true;
+
+          factory: SignalListItemFactory fact_xpos {};
+        }
+
+        ColumnViewColumn {
+          title: "Y Pos";
+          expand: true;
+
+          factory: SignalListItemFactory fact_ypos {};
+        }
+      }
+    }
+  }
+}

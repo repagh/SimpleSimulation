@@ -21,7 +21,7 @@ rt_sync_mode = 2                       # 0=sigwait, obsolete
                                        # 3=rtc, obsolete
 
 # graphic interface selection, typically "none", "gtk2", "gtk3"
-graphic_interface = "gtk3"             # selection of interface
+graphic_interface = "gtk4"             # selection of interface
 
 ### parameters defining "size" of the time. Note that all nodes should have
 ### the same compatible_increment, and for all nodes

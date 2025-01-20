@@ -167,9 +167,18 @@ if this_node_id == ecs_node:
             )
             )
     )
+
+    # replay filer for the "simple" entity's recordable/replayable data
+    # (basically the flexi-stick)
     filer = dueca.ReplayFiler("SIMPLE")
-    
+
+    # this simply prints joining of teams and current position
+    mymods.append(dueca.Module(
+        "monitor-teams", "", sim_priority).param(
+            set_timing = log_timing,
+            check_timing = (10000, 20000)))
+
+
 # then combine in an entity (one "copy" per node)
 if mymods:
     myentity = dueca.Entity("SIMPLE", mymods)
-

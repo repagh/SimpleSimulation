@@ -21,7 +21,8 @@ USING_DUECA_NS;
 #include "comm-objects.h"
 
 // include headers for functions/classes you need in the module
-
+#include <gtk/gtk.h>
+#include <GtkGladeWindow.hxx>
 
 /** Monitor joining, leaving and updates of ufo vehicles.
 
@@ -36,11 +37,17 @@ class MonitorTeams: public Module
   typedef MonitorTeams _ThisModule_;
 
 private: // simulation data
-  // declare the data you need in your simulation
+#if GTK_CHECK_VERSION(4, 0, 0)
+  // It no longer uses glade, but gtk builder, but the name is still
+  // compatible
+  GtkGladeWindow window;
+
+  GListStore *teams_store;
+#endif
 
 private: // channel access
   /** Read information from the interconnector on joining/leaving peers */
-  ChannelReadToken    r_announce;
+  boost::scoped_ptr<ChannelReadToken>  r_announce;
 
   /** Read the current state of the peer ufo's flying around */
   ChannelReadToken    r_world;
@@ -109,6 +116,30 @@ public: // member functions for cooperation with DUECA
 public: // the member functions that are called for activities
   /** the method that implements the main calculation. */
   void doCalculation(const TimeSpec& ts);
+
+  /** set reader for interlink announements */
+  bool checkAnnounce(const bool& c);
+
+#if GTK_CHECK_VERSION(4, 0, 0)
+
+  /** Set the window position */
+  bool setPositionSize(const std::vector<int>& pos_size);
+
+  /** Factory callback for labels in the column view */
+  void cbSetupLabel(GtkSignalListItemFactory *fact, GtkListItem *item,
+                 gpointer user_data);
+
+  /** Set the name of the team in the 1s column */
+  void cbBindName(GtkSignalListItemFactory *fact,
+                 GtkListItem *item, gpointer user_data);
+
+  /** Bind moving x or y position to other columns */
+  void cbBindProp(GtkSignalListItemFactory *fact,
+               GtkListItem *item, gpointer prop);
+
+  /** Demo callback from a button */
+  void cbCollectData(GtkWidget* btn, gpointer user_data);
+#endif
 
   /** print a notification about a leaving or joining peer */
   void doNotify(const TimeSpec& ts);
