@@ -321,11 +321,6 @@ void MonitorTeams::doCalculation(const TimeSpec &ts)
     ecount++;
     try {
       DataReader<BaseObjectMotion, MatchIntervalStartOrEarlier> om(r_world);
-      std::cout << "Ufo " << r_world.getEntryLabel() << " now at "
-                << om.data().xyz << std::endl;
-      std::cout << "Current tick " << ts.getValidityStart()
-                << ", data generated at " << om.timeSpec().getValidityStart()
-                << std::endl;
 
 #if GTK_CHECK_VERSION(4, 0, 0)
       auto idx = findIndex(G_LIST_MODEL(teams_store), r_world.getEntryLabel());
@@ -354,6 +349,13 @@ void MonitorTeams::doCalculation(const TimeSpec &ts)
                                    my_location_properties[MY_YPOS]);
         }
       }
+#else
+      // no interface, just print
+      std::cout << "Ufo " << r_world.getEntryLabel() << " now at "
+                << om.data().xyz << std::endl;
+      std::cout << "Current tick " << ts.getValidityStart()
+                << ", data generated at " << om.timeSpec().getValidityStart()
+                << std::endl;
 #endif
     }
     catch (const NoDataAvailable &e) {
@@ -363,7 +365,7 @@ void MonitorTeams::doCalculation(const TimeSpec &ts)
   }
 
   // This shows we looked.
-  std::cout << "There were " << ecount << " entries" << std::endl;
+  //std::cout << "There were " << ecount << " entries" << std::endl;
 }
 
 void MonitorTeams::doNotify(const TimeSpec &ts)

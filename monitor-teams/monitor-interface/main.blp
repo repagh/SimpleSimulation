@@ -56,6 +56,28 @@ Window welcome {
       }
     }
 
+    Box {
+      orientation: horizontal;
+
+      CheckButton mw_my_radio-Veronica {
+        label: "Veronica";
+        hexpand: true;
+        active: true;
+      }
+
+      CheckButton mw_my_radio-Radio3 {
+        label: "Radio3";
+        group: mw_my_radio-Veronica;
+        hexpand: true;
+      }
+
+      CheckButton mw_my_radio-NDR {
+        label: "NDR";
+        group: mw_my_radio-Veronica;
+        hexpand: true;
+      }
+    }
+
     ScrolledWindow {
       ColumnView teams {
         ColumnViewColumn {

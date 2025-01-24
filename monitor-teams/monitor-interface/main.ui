@@ -66,6 +66,32 @@
           </object>
         </child>
         <child>
+          <object class="GtkBox">
+            <property name="orientation">0</property>
+            <child>
+              <object class="GtkCheckButton" id="mw_my_radio-Veronica">
+                <property name="label">Veronica</property>
+                <property name="hexpand">true</property>
+                <property name="active">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="mw_my_radio-Radio3">
+                <property name="label">Radio3</property>
+                <property name="group">mw_my_radio-Veronica</property>
+                <property name="hexpand">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="mw_my_radio-NDR">
+                <property name="label">NDR</property>
+                <property name="group">mw_my_radio-Veronica</property>
+                <property name="hexpand">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
           <object class="GtkScrolledWindow">
             <child>
               <object class="GtkColumnView" id="teams">

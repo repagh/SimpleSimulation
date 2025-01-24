@@ -14,6 +14,7 @@
 (Type std::string "#include <string>")
 (Enum Choice uint8_t
       No Yes Maybe)
+(Enum RadioTest uint8_t Veronica Radio3 NDR)
 
 ;; DCO object, demo of interface data extraction
 (Object UIPalooza
@@ -22,6 +23,7 @@
 
         (float the_spin (Default 0.0f))
         (Choice the_drop (Default Yes))
+        (RadioTest my_radio (Default NDR))
         (bool a_choice (Default false))
         (uint32_t intchoice (Default 0))
         )

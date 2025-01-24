@@ -42,8 +42,8 @@ sim_priority = dueca.PrioritySpec(2, 0)
 # this is normally 100, giving 100 Hz timing
 sim_timing = dueca.TimeSpec(0, 100)
 
-## for now, display on 50 Hz
-display_timing = dueca.TimeSpec(0, 200)
+## for now, display on 20 Hz
+display_timing = dueca.TimeSpec(0, 500)
 
 ## log a bit more economical, 25 Hz
 log_timing = dueca.TimeSpec(0, 400)
@@ -128,6 +128,11 @@ if this_node_id == ecs_node:
             set_timing = sim_timing,
             check_timing = (1000, 2000)))
 
+    mymods.append(dueca.Module(
+        "compass", "", admin_priority).param(
+            set_timing = display_timing,
+            check_timing = (1000, 2000)))
+
     # the visual output
     mymods.append(
         dueca.Module(
@@ -166,7 +171,7 @@ if this_node_id == ecs_node:
                 ('static-object', ('centered:skydome', 'skydome'))
             )
             )
-    )
+        )
 
     # replay filer for the "simple" entity's recordable/replayable data
     # (basically the flexi-stick)
