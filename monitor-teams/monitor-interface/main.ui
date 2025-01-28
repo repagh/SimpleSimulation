@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkWindow" id="welcome">
+    <property name="title">gtk ui test window</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">1</property>
+        <child>
+          <object class="GtkBox" id="tools">
+            <property name="orientation">0</property>
+            <child>
+              <object class="GtkCheckButton" id="mw_a_choice">
+                <property name="label">check</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkDropDown" id="mw_the_drop">
+                <property name="enable-search">true</property>
+                <property name="selected">0</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item>Yes</item>
+                      <item>No</item>
+                      <item>Maybe</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkDropDown" id="mw_intchoice">
+                <property name="selected">0</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item>-1</item>
+                      <item>0</item>
+                      <item>1</item>
+                      <item>2</item>
+                      <item>3</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="mw_the_spin">
+                <property name="digits">2</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">5</property>
+                    <property name="step-increment">1</property>
+                    <property name="value">0</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_send">
+                <property name="label">send</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">0</property>
+            <child>
+              <object class="GtkCheckButton" id="mw_my_radio-Veronica">
+                <property name="label">Veronica</property>
+                <property name="hexpand">true</property>
+                <property name="active">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="mw_my_radio-Radio3">
+                <property name="label">Radio3</property>
+                <property name="group">mw_my_radio-Veronica</property>
+                <property name="hexpand">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="mw_my_radio-NDR">
+                <property name="label">NDR</property>
+                <property name="group">mw_my_radio-Veronica</property>
+                <property name="hexpand">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <child>
+              <object class="GtkColumnView" id="teams">
+                <child>
+                  <object class="GtkColumnViewColumn">
+                    <property name="title">Team</property>
+                    <property name="expand">true</property>
+                    <property name="factory">
+                      <object class="GtkSignalListItemFactory" id="fact_team"></object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkColumnViewColumn">
+                    <property name="title">X Pos</property>
+                    <property name="expand">true</property>
+                    <property name="factory">
+                      <object class="GtkSignalListItemFactory" id="fact_xpos"></object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkColumnViewColumn">
+                    <property name="title">Y Pos</property>
+                    <property name="expand">true</property>
+                    <property name="factory">
+                      <object class="GtkSignalListItemFactory" id="fact_ypos"></object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

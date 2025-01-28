@@ -75,6 +75,7 @@ DUECA_environment = dueca.Environment().param(
     multi_thread = run_in_multiple_threads,
     highest_priority = highest_manager,
     graphic_interface = graphic_interface,
+    x_multithread_lock = True,
     command_interval = 0.25,
     command_lead = 0.25).complete()
 
@@ -207,4 +208,3 @@ elif use_ip_comm and send_order != 0:
 ###      give these the opportunity to do additional initialisation
 ###      Then it creates the EntityManager for this node, and the
 ###      configuration continues with dueca_mod.py
-
