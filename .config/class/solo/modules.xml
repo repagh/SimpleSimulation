@@ -22,7 +22,6 @@
   </project>
   <project>
     <url>dgrpub:///FlexiStick.git</url>
-    <version>gtk4</version>
     <module>flexi-stick</module>
   </project>
   <project>

@@ -127,10 +127,12 @@ const ParameterTable *MonitorTeams::getMyParameterTable()
         &_ThisModule_::checkTiming),
       check_timing_description },
 
+#if GTK_CHECK_VERSION(4, 0, 0)
     { "position-size",
       new MemberCall<_ThisModule_, std::vector<int>>(
         &_ThisModule_::setPositionSize),
       "Set the feedback/test window position and size" },
+#endif
 
     { "check-announce",
       new MemberCall<_ThisModule_, bool>(&_ThisModule_::checkAnnounce),
