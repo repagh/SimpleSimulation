@@ -3,7 +3,7 @@
 # running the application on a specific machine.
 
 # standard folder with project-wide data
-DATADIR=../../run-data
+DATADIR=$(realpath ../../run-data)
 
 # example for project-wide configuration (.cnf) files
 # ln -sf $DATADIR/*.cnf .
@@ -19,6 +19,28 @@ if [ -d ../../../build ]; then
 else
    ln -sf ../../../dueca_run.x .
 fi
+
+# run script, if desired
+RUNSCRIPT=1
+# files you want kept with the run results, e.g. data logs
+MOVEFILES="initials-*.toml recordings-*.ddff"
+# files you want copied with the run results, e.g. config file
+COPYFILES="dueca_mod.py"
+
+# create the run script if it does not exist
+if [ \! -x runscript -a ${RUNSCRIPT} = "1" ]; then
+
+    # modify this script snippet as needed
+    cat >runscript <<EOF
+#!/usr/bin/bash
+dueca-archivelogfiles "$MOVEFILES" "$COPYFILES"
+./dueca_run.x > >(tee normal.log) 2> >(tee error.log >&2)
+EOF
+
+    # make executable
+    chmod +x runscript
+fi
+
 
 # Added for SimpleSimulation, link .obj and .mtl files for the visual
 ln -sf ../../../../WorldView/icy-world/*.obj .

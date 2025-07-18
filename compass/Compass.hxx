@@ -30,7 +30,7 @@ USING_DUECA_NS;
 #include <VaoVbo.hxx>
 
 // for now, the gtk4 gl support interferes with OSG viewer ... :-(
-#define BARE 1
+#define BARE 0
 #if GTK_CHECK_VERSION(4, 0, 0) && !BARE
 #include <extra/gui/gtk4/DuecaGLGtk4Window.hxx>
 typedef dueca::DuecaGLGtk4Window DUECAGLWindow;
@@ -142,6 +142,9 @@ public:
 
   /** reshape callback, window size changed */
   virtual void reshape(int x, int y) final;
+
+  /** Passive motion test? */
+  virtual void passive(int x, int y) final;
 
 public: // the member functions that are called for activities
   /** the method that implements the main calculation. */

@@ -27,7 +27,8 @@
 #define DO_INSTANTIATE
 #include <dueca/dueca.h>
 
-#define DEBPRINTLEVEL 0
+// This is a DUECA-typical debug printer,
+#define DEBPRINTLEVEL 1
 #include <debprint.h>
 
 // include the debug writing header, by default, write warning and
@@ -86,7 +87,7 @@ Compass::Compass(Entity *e, const char *part, const PrioritySpec &ps) :
      You always pass the pointer to the entity, give the classname and the
      part arguments. */
   Module(e, classname, part),
-  DUECAGLWindow("compass"),
+  DUECAGLWindow("compass", true, false, false),
 
   // initialize the data you need in your simulation or process
   heading(0.0f),
@@ -122,6 +123,8 @@ Compass::~Compass()
   // to be freed. When the DuecaGLWindow is destroyed, the GL
   // context itself will be released
   selectGraphicsContext();
+  texter.reset();
+  lineshader.reset();
 }
 
 // as an example, the setTimeSpec function
@@ -178,11 +181,11 @@ void Compass::stopModule(const TimeSpec &time) { do_calc.switchOff(time); }
 void Compass::doCalculation(const TimeSpec &ts)
 {
   try {
-  // read latest heading
-  DataReader<BaseObjectPosition> p(r_position, ts);
-  heading = p.data().getPsi();
+    // read latest heading
+    DataReader<BaseObjectPosition> p(r_position, ts);
+    heading = p.data().getPsi();
   }
-  catch (const dueca::NoDataAvailable& e) {
+  catch (const dueca::NoDataAvailable &e) {
     // might happen
   }
 
@@ -262,6 +265,7 @@ static GLuint program;
 
 void Compass::initGL()
 {
+  DEB("InitGL");
   // is GL loaded? should be according to doc??
 #if TESTIMAGE
   shaderVertex = glCreateShader(GL_VERTEX_SHADER);
@@ -365,6 +369,9 @@ void Compass::display()
   glDrawArrays(GL_TRIANGLES, 0, 3);
   glCheckError();
 #else
+
+  DEB1("Display called");
+
   // background color
   glClearColor(0.2f, 0.0f, 0.2f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -409,6 +416,9 @@ void Compass::display()
   texter->setProjection(projection);
   texter->renderText("E", -0.08, 0.6, 0.005, green);
 #endif
+
+  // release array binding
+  glBindVertexArray(0);
 }
 
 void Compass::reshape(int x, int y)
@@ -422,6 +432,10 @@ void Compass::reshape(int x, int y)
   }
 }
 
+void Compass::passive(int x, int y)
+{
+  DEB("Mouse over " << x << ", " << y);
+}
 // Make a TypeCreator object for this module, the TypeCreator
 // will check in with the script code, and enable the
 // creation of modules of this type

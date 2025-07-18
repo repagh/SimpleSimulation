@@ -2,6 +2,9 @@
 ## this is an example dueca_mod.py file, for you to start out with and adapt
 ## according to your needs. Note that you need a dueca_mod.py file only for the
 ## node with number 0
+compass = True
+outside = True
+virtual_stick = True
 
 ## in general, it is a good idea to clearly document your set up
 ## this is an excellent place.
@@ -48,6 +51,29 @@ display_timing = dueca.TimeSpec(0, 500)
 ## log a bit more economical, 25 Hz
 log_timing = dueca.TimeSpec(0, 400)
 
+if virtual_stick:
+    stick_device = (
+        # virtual, gtk driven stick
+        ('add-virtual', ("logi",)),
+        # axes 0 and 1, roll and pitch
+        ('add-virtual-slider-2d',
+            (15, 15, 185, 185, 3)),
+        # axis 2, yaw
+        ('add-virtual-slider',
+            (10, 195, 190, 195, 3)),
+        # axis 3, throttle
+        ('add-virtual-slider',
+            (5, 190, 5, 10, 3, 1)),
+        # place it on the screen
+        ('virtual-position-size', (0, 370)),
+    )
+else:
+    stick_device = (
+        # logitech stick, first SDL device
+        ('add_device', "logi:0"),
+    )
+
+
 ## ---------------------------------------------------------------------
 ### the modules needed for dueca itself
 if this_node_id == ecs_node:
@@ -92,8 +118,7 @@ if this_node_id == ecs_node:
             set_timing = sim_timing,
             enable_record_replay = True,
             check_timing = (1000, 2000)).param(
-            # logitech stick, first SDL device
-            ('add_device', "logi:0"),
+                *stick_device,
 
             # by default, axes go from -1 to 1, convert throttle to
             # run from -1 to 5 (slow back-up to forward 5m/s), with
@@ -128,50 +153,52 @@ if this_node_id == ecs_node:
             set_timing = sim_timing,
             check_timing = (1000, 2000)))
 
-    mymods.append(dueca.Module(
-        "compass", "", admin_priority).param(
-            set_timing = display_timing,
-            check_timing = (1000, 2000)))
+    if compass:
+        mymods.append(dueca.Module(
+            "compass", "", admin_priority).param(
+                set_timing = display_timing,
+                check_timing = (1000, 2000)))
 
     # the visual output
-    mymods.append(
-        dueca.Module(
-            "world-view", "", admin_priority).param(
-            set_timing = display_timing,
-            check_timing = (8000, 9000),
-            set_viewer =
-            dueca.OSGViewer().param(
-                # set up window
-                ('add_window', 'front'),
-                ('window_size+pos', (800, 600, 10, 10)),
-                ('add_viewport', 'front'),
-                ('viewport_window', 'front'),
-                ('viewport_pos+size', (0, 0, 800, 600)),
+    if outside:
+        mymods.append(
+            dueca.Module(
+                "world-view", "", admin_priority).param(
+                set_timing = display_timing,
+                check_timing = (8000, 9000),
+                set_viewer =
+                dueca.OSGViewer().param(
+                    # set up window
+                    ('add_window', 'front'),
+                    ('window_size+pos', (800, 600, 10, 10)),
+                    ('add_viewport', 'front'),
+                    ('viewport_window', 'front'),
+                    ('viewport_pos+size', (0, 0, 800, 600)),
 
-                # add visual objects (classes, then instantiation)
-                ('add-object-class-data',
-                 ("static:sunlight", "sunlight", "static-light")),
-                ('add-object-class-coordinates',
-                 (0.48, 0.48, 0.48, 1,   # ambient
-                  0.48, 0.48, 0.48, 1,   # diffuse
-                  0.0, 0.0, 0.0, 1,      # specular
-                  0.4, 0.0, 1.0, 0,      # south??
-                  0, 0, 0,               # direction not used
-                  0.2, 0, 0)),           # no attenuation for sun
-                ('add-object-class-data',
-                 ("static:terrain", "terrain", "static", "terrain.obj")),
-                ('add-object-class-data',
-                 ("centered:skydome", "skydome", "centered", "skydome.obj")),
-                ('add-object-class-coordinates',
-                 (0.0, 0.0, 50.0)),
+                    # add visual objects (classes, then instantiation)
+                    ('add-object-class-data',
+                    ("static:sunlight", "sunlight", "static-light")),
+                    ('add-object-class-coordinates',
+                    (0.48, 0.48, 0.48, 1,   # ambient
+                    0.48, 0.48, 0.48, 1,   # diffuse
+                    0.0, 0.0, 0.0, 1,      # specular
+                    0.4, 0.0, 1.0, 0,      # south??
+                    0, 0, 0,               # direction not used
+                    0.2, 0, 0)),           # no attenuation for sun
+                    ('add-object-class-data',
+                    ("static:terrain", "terrain", "static", "terrain.obj")),
+                    ('add-object-class-data',
+                    ("centered:skydome", "skydome", "centered", "skydome.obj")),
+                    ('add-object-class-coordinates',
+                    (0.0, 0.0, 50.0)),
 
-                # make the objects
-                ('static-object', ('static:sunlight', 'sunlight')),
-                ('static-object', ('static:terrain', 'terrain')),
-                ('static-object', ('centered:skydome', 'skydome'))
+                    # make the objects
+                    ('static-object', ('static:sunlight', 'sunlight')),
+                    ('static-object', ('static:terrain', 'terrain')),
+                    ('static-object', ('centered:skydome', 'skydome'))
+                )
+                )
             )
-            )
-        )
 
     # replay filer for the "simple" entity's recordable/replayable data
     # (basically the flexi-stick)
