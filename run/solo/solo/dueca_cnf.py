@@ -11,8 +11,8 @@ no_of_nodes = 1                        # total number of nodes used
 send_order = 0                         # order/prio in send cycle
 
 ### parameter defining real_time behaviour
-highest_manager = 4                    # max priority of activities
-run_in_multiple_threads = True  and False      # test with False for threading problems
+highest_manager = 5                    # max priority of activities
+run_in_multiple_threads = True # and False      # test with False for threading problems
 rt_sync_mode = 2                       # 0=sigwait, obsolete
                                        # 1=select, portable, obsolete
                                        # 2=nanosleep, good for all modern

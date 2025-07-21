@@ -6,6 +6,7 @@ compass = True
 outside = True
 virtual_stick = True
 use_vsg = True
+claim_thread = True
 
 ## in general, it is a good idea to clearly document your set up
 ## this is an excellent place.
@@ -30,7 +31,13 @@ admin_priority = dueca.PrioritySpec(0, 0)
 log_priority = dueca.PrioritySpec(1, 0)
 
 # priority of simulation, just above log
-sim_priority = dueca.PrioritySpec(2, 0)
+sim_priority = dueca.PrioritySpec(3, 0)
+
+if claim_thread:
+    graphics_priority = dueca.PrioritySpec(2, 0)
+else:
+    graphics_priority = dueca.PrioritySpec(0, 0)
+
 
 # nodes with a different priority scheme
 # control loading node has 0, 1, 2 and 3 as above and furthermore
@@ -51,6 +58,7 @@ display_timing = dueca.TimeSpec(0, 500)
 
 ## log a bit more economical, 25 Hz
 log_timing = dueca.TimeSpec(0, 400)
+
 
 if virtual_stick:
     stick_device = (
@@ -204,8 +212,9 @@ if this_node_id == ecs_node:
     if outside and use_vsg:
         mymods.append(
             dueca.Module(
-                "world-view", "", admin_priority).param(
+                "world-view", "", graphics_priority).param(
                 set_timing = display_timing,
+                claim_thread = claim_thread,
                 check_timing = (8000, 9000),
                 set_viewer =
                 dueca.VSGViewer().param(
