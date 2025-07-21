@@ -5,6 +5,7 @@
 compass = True
 outside = True
 virtual_stick = True
+use_vsg = True
 
 ## in general, it is a good idea to clearly document your set up
 ## this is an excellent place.
@@ -160,7 +161,7 @@ if this_node_id == ecs_node:
                 check_timing = (1000, 2000)))
 
     # the visual output
-    if outside:
+    if outside and not use_vsg:
         mymods.append(
             dueca.Module(
                 "world-view", "", admin_priority).param(
@@ -199,6 +200,66 @@ if this_node_id == ecs_node:
                 )
                 )
             )
+
+    if outside and use_vsg:
+        mymods.append(
+            dueca.Module(
+                "world-view", "", admin_priority).param(
+                set_timing = display_timing,
+                check_timing = (8000, 9000),
+                set_viewer =
+                dueca.VSGViewer().param(
+                    # set up window
+                    ('add_window', 'front'),
+                    ('window-size+pos', (800, 600, 10, 10)),
+                    ('add_viewport', 'front'),
+                    ('viewport_window', 'front'),
+                    ('viewport-pos+size', (0, 0, 800, 600)),
+                    ('set-frustum', (1.0, 1000.0, 40.0)),
+
+                    # add visual objects (classes, then instantiation)
+                    ('add-object-class',
+                     ("static:sunlight:dir", "sunlight", "directional-light")),
+                    ('add-object-class-parameters',
+                    (1.0, 1.0, 1.0,           # color white
+                     0.2,                     # intensity
+                     0.1, 0.1, 1.0            # direction
+                     )),
+                    ('add-object-class',
+                     ("static:sunlight:amb", "ambient", "ambient-light")),
+                    ('add-object-class-parameters',
+                    (1.0, 1.0, 1.0,           # color white
+                     0.5                      # intensity
+                    )),
+                    ('add-object-class',
+                    ('static:terrain:base', "root/tbase", "static-transform")),
+                    ('add-object-class-parameters',
+                    (0, 0, 0, 0, 0, 0, 100, 100, 100)),
+                    ('add-object-class',
+                    ("static:terrain", "tbase/terrain", "static-model", "terrain.vsgb")),
+                    ('add-object-class',
+                    ('static:skydome:base', "observer/sbase", "centered-transform")),
+                    ('add-object-class-parameters',
+                    (0, 0, 50, 0, 0, 0, 200, 200, 200)),
+
+                    ('add-object-class',
+                    ("centered:skydome", "sbase/skydome", "static-model", "skydome.vsgb")),
+
+                    # make the objects
+                    ('create-static', ('static:terrain:base',)),
+                    ('create-static', ('static:skydome:base',)),
+                    ('create-static', ('static:sunlight:dir', 'sunlight-dir')),
+                    ('create-static', ('static:sunlight:amb', 'sunlight-amb')),
+
+                    ('create-static', ('static:terrain', 'terrain')),
+                    ('create-static', ('centered:skydome', 'skydome')),
+                 #('set-xml-definitions',
+                 #'../../../../WorldView/vsg-viewer/vsgobjects.xml'),
+                #('read-xml-definitions', 'exampleworld.xml'),
+               )
+                )
+            )
+
 
     # replay filer for the "simple" entity's recordable/replayable data
     # (basically the flexi-stick)

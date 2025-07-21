@@ -28,7 +28,7 @@
 #include <dueca/dueca.h>
 
 // This is a DUECA-typical debug printer,
-#define DEBPRINTLEVEL 1
+#define DEBPRINTLEVEL -1
 #include <debprint.h>
 
 // include the debug writing header, by default, write warning and
@@ -372,6 +372,9 @@ void Compass::display()
 
   DEB1("Display called");
 
+  // Viewport def
+  glViewport(vp_offx, vp_offy, vp_size, vp_size);
+
   // background color
   glClearColor(0.2f, 0.0f, 0.2f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -425,17 +428,18 @@ void Compass::reshape(int x, int y)
 {
   DEB("Reshape to " << x << "," << y);
   if (x > y) {
-    glViewport((x - y) / 2, 0, y, y);
+    vp_offx = (x - y) / 2;
+    vp_offy = 0;
+    vp_size = y;
   }
   else {
-    glViewport(0, (y - x) / 2, x, x);
+    vp_offy = (y - x) / 2;
+    vp_offx = 0;
+    vp_size = x;
   }
 }
 
-void Compass::passive(int x, int y)
-{
-  DEB("Mouse over " << x << ", " << y);
-}
+void Compass::passive(int x, int y) { DEB("Mouse over " << x << ", " << y); }
 // Make a TypeCreator object for this module, the TypeCreator
 // will check in with the script code, and enable the
 // creation of modules of this type

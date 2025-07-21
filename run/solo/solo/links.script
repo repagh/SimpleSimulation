@@ -41,7 +41,19 @@ EOF
     chmod +x runscript
 fi
 
+ln -sf ../../../../WorldView/vsg-viewer/shaders .
 
 # Added for SimpleSimulation, link .obj and .mtl files for the visual
-ln -sf ../../../../WorldView/icy-world/*.obj .
-ln -sf ../../../../WorldView/icy-world/*.mtl .
+MODELPATH=$(realpath ../../../../WorldView/icy-world)
+ln -sf ${MODELPATH}/*.obj .
+ln -sf ${MODELPATH}/*.mtl .
+
+# Add the vsgb files for VulkanSceneGraph viewing
+for NAME in skydome terrain; do
+    if [ \! -f ${NAME}.glb ]; then
+	blender --python \
+		${MODELPATH}/bake-a-blend.py \
+		-- ${MODELPATH}/${NAME}.blend glb
+    fi
+    vsgconvd ${NAME}.glb ${NAME}.vsgb
+done

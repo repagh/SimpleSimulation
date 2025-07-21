@@ -62,10 +62,9 @@ private: // simulation data
   /** Font for compass */
   std::string font;
 
-  /** GL definition helper */
-
   // GL links for triangle
   VaoVbo headingtri;
+
   // GL links for compass
   VaoVbo compass;
 
@@ -74,6 +73,15 @@ private: // simulation data
 
   // text renderer
   boost::scoped_ptr<TextRenderer> texter;
+
+  /// Current viewport offset
+  GLint vp_offx;
+
+  /// Current viewport offset
+  GLint vp_offy;
+
+  // Current viewport size
+  GLsizei vp_size;
 
 private: // channel access
   ChannelReadToken r_position;
