@@ -7,3 +7,6 @@ clean-dueca-rundir
 
 # clean symbolic links
 find . -type l -exec rm {} \;
+
+# generated files
+rm -f *.glb *.vsgb runscript

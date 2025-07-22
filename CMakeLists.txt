@@ -11,13 +11,13 @@ cmake_minimum_required(VERSION 3.8)
 project(SimpleSimulation)
 
 # default c++11
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 # script language used
 set(SCRIPTLANG  python)
 
 # selection of dueca components common to all machines in this project
-set(DUECA_COMPONENTS ${SCRIPTLANG} extra dusime udp hdf5 inter websock)
+set(DUECA_COMPONENTS ${SCRIPTLANG} extra dusime udp hdf5 inter websock glfw)
 
 # find DUECA, activate specific functions
 find_package(DUECA)

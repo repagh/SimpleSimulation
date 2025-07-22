@@ -207,4 +207,3 @@ elif use_ip_comm and send_order != 0:
 ###      give these the opportunity to do additional initialisation
 ###      Then it creates the EntityManager for this node, and the
 ###      configuration continues with dueca_mod.py
-

@@ -21,7 +21,6 @@ USING_DUECA_NS;
 #include "comm-objects.h"
 
 // include headers for functions/classes you need in the module
-#include <gtk/gtk.h>
 #include <glm/glm.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -30,16 +29,19 @@ USING_DUECA_NS;
 #include <VaoVbo.hxx>
 
 // for now, the gtk4 gl support interferes with OSG viewer ... :-(
-#define BARE 1
-#if GTK_CHECK_VERSION(4, 0, 0) && !BARE
+#define BARE 0
+#if !BARE
+#include <gtk/gtk.h>
+#if GTK_CHECK_VERSION(4, 0, 0)
 #include <extra/gui/gtk4/DuecaGLGtk4Window.hxx>
 typedef dueca::DuecaGLGtk4Window DUECAGLWindow;
-#elif GTK_CHECK_VERSION(3, 16, 0) && !BARE
+#elif GTK_CHECK_VERSION(3, 16, 0)
 #include <extra/gui/gtk3/DuecaGLGtk3Window.hxx>
 typedef dueca::DuecaGLGtk3Window DUECAGLWindow;
+#endif
 #else
-#include <extra/gui/X11/BareDuecaGLWindow.hxx>
-typedef dueca::BareDuecaGLWindow DUECAGLWindow;
+#include <extra/gui/glfw/DuecaGLFWWindow.hxx>
+typedef dueca::DuecaGLFWWindow DUECAGLWindow;
 #endif
 #undef BARE
 
@@ -62,10 +64,9 @@ private: // simulation data
   /** Font for compass */
   std::string font;
 
-  /** GL definition helper */
-
   // GL links for triangle
   VaoVbo headingtri;
+
   // GL links for compass
   VaoVbo compass;
 
@@ -74,6 +75,15 @@ private: // simulation data
 
   // text renderer
   boost::scoped_ptr<TextRenderer> texter;
+
+  /// Current viewport offset
+  GLint vp_offx;
+
+  /// Current viewport offset
+  GLint vp_offy;
+
+  // Current viewport size
+  GLsizei vp_size;
 
 private: // channel access
   ChannelReadToken r_position;
@@ -142,6 +152,9 @@ public:
 
   /** reshape callback, window size changed */
   virtual void reshape(int x, int y) final;
+
+  /** Passive motion test? */
+  virtual void passive(int x, int y) final;
 
 public: // the member functions that are called for activities
   /** the method that implements the main calculation. */
