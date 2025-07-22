@@ -21,7 +21,7 @@
 # CMakeLists.txt file
 
 # extend DUECA_COMPONENTS with additional components
-set(GUI_COMPONENT "gtk4")
+set(GUI_COMPONENT "gtk3")
 if(GUI_COMPONENT)
     list(APPEND DUECA_COMPONENTS ${GUI_COMPONENT})
 endif()
