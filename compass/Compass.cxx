@@ -122,9 +122,12 @@ Compass::~Compass()
   // make my context active again, because GL objects are going
   // to be freed. When the DuecaGLWindow is destroyed, the GL
   // context itself will be released
-  selectGraphicsContext();
-  texter.reset();
-  lineshader.reset();
+  // selectGraphicsContext(false);
+  if (selectGraphicsContext()) {
+    texter.reset();
+    lineshader.reset();
+    selectGraphicsContext(false);
+  }
 }
 
 // as an example, the setTimeSpec function
