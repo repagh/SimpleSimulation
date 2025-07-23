@@ -21,7 +21,27 @@
 # CMakeLists.txt file
 
 # extend DUECA_COMPONENTS with additional components
-set(GUI_COMPONENT "gtk4")
+
+# This defines some extra options, so that for the testing this project can be
+# compiled in various combinations.
+option(USE_GTK3      "Use GTK3 for graphic interface + GL winows" ON)
+option(USE_GTK4      "Use GTK4 for graphic interface + GL windows" OFF)
+option(GL_WITH_X     "Force a BareDuecaGL window (X11) for GL windows" OFF)
+option(GL_WITH_GLFW  "Force a GLFW window (X11 or Wayland) for GL windows" OFF)
+
+if(USE_GTK3)
+    set(GUI_COMPONENT "gtk3")
+endif()
+if(USE_GTK4)
+    set(GUI_COMPONENT "gtk4")
+endif()
+
+if(GL_WITH_X)
+    set(CFLAGS "-DGL_WITH_BARE")
+elseif(GL_WITH_GLFW)
+    set(CFLAGS "-DGL_WITH_GLFW")
+endif()
+
 if(GUI_COMPONENT)
     list(APPEND DUECA_COMPONENTS ${GUI_COMPONENT})
 endif()
@@ -35,4 +55,4 @@ endif()
 #set(PROJECT_INCLUDE_DIRS )
 
 # define PROJECT_COMPILE_FLAGS with the flags needed for compiling
-#set(PROJECT_COMPILE_FLAGS )
+set(PROJECT_COMPILE_FLAGS ${CFLAGS})

@@ -3,10 +3,10 @@
 # running the application on a specific machine.
 
 # standard folder with project-wide data
-DATADIR=../../run-data
+DATADIR=$(realpath ../../run-data)
 
-# example for project-wide configuration (.cnf) files
-# ln -sf $DATADIR/*.cnf .
+# python helper script
+ln -sf $DATADIR/which_dueca_gtk.py .
 
 # create a folder for run log history
 if [ ! -d runlogs ]; then
