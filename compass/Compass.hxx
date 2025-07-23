@@ -29,8 +29,13 @@ USING_DUECA_NS;
 #include <VaoVbo.hxx>
 
 // for now, the gtk4 gl support interferes with OSG viewer ... :-(
-#define BARE 0
-#if !BARE
+#if defined(GL_WITH_GLFW)
+#include <extra/gui/glfw/DuecaGLFWWindow.hxx>
+typedef dueca::DuecaGLFWWindow DUECAGLWindow;
+#elif defined(GL_WITH_X)
+#include <extra/gui/X11/BareDuecaGLWindow.hxx>
+typedef dueca::BareDuecaGLWindow DUECAGLWindow;
+#else
 #include <gtk/gtk.h>
 #if GTK_CHECK_VERSION(4, 0, 0)
 #include <extra/gui/gtk4/DuecaGLGtk4Window.hxx>
@@ -39,11 +44,7 @@ typedef dueca::DuecaGLGtk4Window DUECAGLWindow;
 #include <extra/gui/gtk3/DuecaGLGtk3Window.hxx>
 typedef dueca::DuecaGLGtk3Window DUECAGLWindow;
 #endif
-#else
-#include <extra/gui/glfw/DuecaGLFWWindow.hxx>
-typedef dueca::DuecaGLFWWindow DUECAGLWindow;
 #endif
-#undef BARE
 
 /** Compass visualization, test with DuecaGLWindow.
 

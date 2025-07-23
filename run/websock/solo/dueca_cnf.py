@@ -4,6 +4,10 @@
 
 ### import the dueca namespace; provided by the c++ code
 import dueca
+import os
+import sys
+sys.path.append(os.getcwd())
+from which_dueca_gtk import which_dueca_gtk
 
 ### parameters defining cooperation with other nodes
 this_node_id = 0                       # id of the current node
@@ -21,7 +25,8 @@ rt_sync_mode = 2                       # 0=sigwait, obsolete
                                        # 3=rtc, obsolete
 
 # graphic interface selection, typically "none", "gtk2", "gtk3"
-graphic_interface = "gtk3"             # selection of interface
+graphic_interface = which_dueca_gtk()  # selection of interface
+print("Graphic interface detected as", graphic_interface)
 
 ### parameters defining "size" of the time. Note that all nodes should have
 ### the same compatible_increment, and for all nodes
