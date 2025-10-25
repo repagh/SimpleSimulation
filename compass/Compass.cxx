@@ -87,13 +87,20 @@ Compass::Compass(Entity *e, const char *part, const PrioritySpec &ps) :
      You always pass the pointer to the entity, give the classname and the
      part arguments. */
   Module(e, classname, part),
+
+  // we derive from a GL-capable window. Which one exactly can be determined
+  // in the CMake configuration
   DUECAGLWindow("compass", true, false, false),
 
   // initialize the data you need in your simulation or process
+  // Compass heading
   heading(0.0f),
+
+  // Font to be used
   font("/usr/share/fonts/open-sans/OpenSans-Regular.ttf"),
 
-  // initialize the channel access tokens, check the documentation for the
+  // initialize the channel access tokens
+  // read the orientation from the vehicle's ObjectMotion
   r_position(getId(), NameSet(getEntity(), "ObjectMotion", part),
              getclassname<BaseObjectPosition>(), 0),
 
@@ -443,6 +450,7 @@ void Compass::reshape(int x, int y)
 }
 
 void Compass::passive(int x, int y) { DEB("Mouse over " << x << ", " << y); }
+
 // Make a TypeCreator object for this module, the TypeCreator
 // will check in with the script code, and enable the
 // creation of modules of this type

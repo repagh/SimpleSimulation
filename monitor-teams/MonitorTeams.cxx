@@ -15,10 +15,6 @@
 // include the definition of the module class
 #include "MonitorTeams.hxx"
 
-// include additional files needed for your calculation here
-#include <dueca/CommObjectWriter.hxx>
-#include <dueca/CommObjectReader.hxx>
-
 // the standard package for DUSIME, including template source
 #define DO_INSTANTIATE
 #include <dueca.h>
@@ -231,8 +227,7 @@ bool MonitorTeams::complete()
   gtk_column_view_set_model(teams_view, GTK_SELECTION_MODEL(selection));
 
   UIPalooza values;
-  CommObjectReader cor(getclassname<UIPalooza>(), &values);
-  window.setValues(cor, "mw_%s", NULL, true);
+  window.setValues(values, "mw_%s", NULL, true);
 
   window.show();
 
@@ -412,8 +407,7 @@ void MonitorTeams::cbBindProp(GtkSignalListItemFactory *fact, GtkListItem *item,
 void MonitorTeams::cbCollectData(GtkWidget *btn, gpointer user_data)
 {
   UIPalooza values;
-  CommObjectWriter cow(getclassname<UIPalooza>(), &values);
-  window.getValues(cow, "mw_%s", NULL, true);
+  window.getValues(values, "mw_%s", NULL, true);
   std::cout << "From interface: " << values << std::endl;
 }
 
