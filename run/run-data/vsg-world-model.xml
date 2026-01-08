@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<world xmlns="https://dueca.tudelft.nl"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://dueca.tudelft.nl https://raw.githubusercontent.com/dueca/WorldView/master/vsg-viewer/vsgworld.xsd">
+
+  <static name="ambient" type="ambient-light" root="true">
+    <param name="color"> 1, 1, 1 </param>
+    <param name="intensity"> 0.5 </param>
+  </static>
+
+  <static name="sunlight" type="directional-light" root="true">
+    <param name="color"> 1, 1, 1 </param>
+    <param name="intensity"> 0.2 </param>
+    <param name="direction"> 0.1, 0.1, 1.0 </param>
+  </static>
+
+  <static name="skydome" type="static-model">
+    <param name="file">skydome.glb</param>
+  </static>
+
+  <static name="observerbase" type="centered-transform" root="true">
+    <param name="xyz">0, 0, 50</param>
+    <param name="phithetapsi">0, 0, 0</param>
+    <param name="scalexyz"> 200, 200, 200</param>
+    <child>skydome</child>
+  </static>
+
+  <static name="terrain" type="static-model">
+    <param name="file">terrain.glb</param>
+  </static>
+
+  <static name="terrain-base" type="static-transform" root="true">
+    <param name="xyz"> 0, 0, 0</param>
+    <param name="phithetapsi">0, 0, 0</param>
+    <param name="scalexyz"> 100, 100, 100</param>
+    <child>terrain</child>
+  </static>
+
+</world>

@@ -42,6 +42,7 @@ EOF
 fi
 
 ln -sf ../../../../WorldView/vsg-viewer/shaders .
+ln -sf $DATADIR/vsg-world-model.xml .
 
 # Added for SimpleSimulation, link .obj and .mtl files for the visual
 MODELPATH=$(realpath ../../../../WorldView/icy-world)
@@ -51,9 +52,8 @@ ln -sf ${MODELPATH}/*.mtl .
 # Add the vsgb files for VulkanSceneGraph viewing
 for NAME in skydome terrain; do
     if [ \! -f ${NAME}.glb ]; then
-	blender --python \
+	blender --background --python \
 		${MODELPATH}/bake-a-blend.py \
 		-- ${MODELPATH}/${NAME}.blend glb
     fi
-    vsgconvd ${NAME}.glb ${NAME}.vsgb
 done

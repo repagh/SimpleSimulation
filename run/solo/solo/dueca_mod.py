@@ -225,47 +225,8 @@ if this_node_id == ecs_node:
                     ('viewport_window', 'front'),
                     ('viewport-pos+size', (0, 0, 800, 600)),
                     ('set-frustum', (1.0, 1000.0, 40.0)),
-
-                    # add visual objects (classes, then instantiation)
-                    ('add-object-class',
-                     ("static:sunlight:dir", "sunlight", "directional-light")),
-                    ('add-object-class-parameters',
-                    (1.0, 1.0, 1.0,           # color white
-                     0.2,                     # intensity
-                     0.1, 0.1, 1.0            # direction
-                     )),
-                    ('add-object-class',
-                     ("static:sunlight:amb", "ambient", "ambient-light")),
-                    ('add-object-class-parameters',
-                    (1.0, 1.0, 1.0,           # color white
-                     0.5                      # intensity
-                    )),
-                    ('add-object-class',
-                    ('static:terrain:base', "root/tbase", "static-transform")),
-                    ('add-object-class-parameters',
-                    (0, 0, 0, 0, 0, 0, 100, 100, 100)),
-                    ('add-object-class',
-                    ("static:terrain", "tbase/terrain", "static-model", "terrain.vsgb")),
-                    ('add-object-class',
-                    ('static:skydome:base', "observer/sbase", "centered-transform")),
-                    ('add-object-class-parameters',
-                    (0, 0, 50, 0, 0, 0, 200, 200, 200)),
-
-                    ('add-object-class',
-                    ("centered:skydome", "sbase/skydome", "static-model", "skydome.vsgb")),
-
-                    # make the objects
-                    ('create-static', ('static:terrain:base',)),
-                    ('create-static', ('static:skydome:base',)),
-                    ('create-static', ('static:sunlight:dir', 'sunlight-dir')),
-                    ('create-static', ('static:sunlight:amb', 'sunlight-amb')),
-
-                    ('create-static', ('static:terrain', 'terrain')),
-                    ('create-static', ('centered:skydome', 'skydome')),
-                 #('set-xml-definitions',
-                 #'../../../../WorldView/vsg-viewer/vsgobjects.xml'),
-                #('read-xml-definitions', 'exampleworld.xml'),
-               )
+                    ('read-modelfile', 'vsg-world-model.xml'),
+                    )
                 )
             )
 
