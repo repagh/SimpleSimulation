@@ -27,10 +27,6 @@
   </project>
   <project>
     <url>dgrpub:///WorldView.git</url>
-    <!--
-    <url>https://github.com/repagh/WorldView.git</url>
-    <version>simply-vsg-interface</version>
-    -->
     <module>WorldView</module>
     <module>OSGViewer</module>
     <module>SpecificationBase</module>

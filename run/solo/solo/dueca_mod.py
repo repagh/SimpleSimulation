@@ -6,7 +6,7 @@ compass = True
 outside = True
 virtual_stick = True
 use_vsg = True
-claim_thread = True
+claim_thread = True and run_in_multiple_threads
 
 ## in general, it is a good idea to clearly document your set up
 ## this is an excellent place.
