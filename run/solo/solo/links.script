@@ -43,6 +43,7 @@ fi
 
 ln -sf ../../../../WorldView/vsg-viewer/shaders .
 ln -sf $DATADIR/vsg-world-model.xml .
+ln -sf $DATADIR/ufo-dynamics-labels.txt .
 
 # Added for SimpleSimulation, link .obj and .mtl files for the visual
 MODELPATH=$(realpath ../../../../WorldView/icy-world)
