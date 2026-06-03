@@ -1,3 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <policies xmlns="https://dueca.tudelft.nl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://dueca.tudelft.nl policylist.xsd">
+  <policy date="2026-06-03 19:38" id="24-001">
+    <file>/home/repa/gdapps/SimpleSimulation/SimpleSimulation/ufo-dynamics/comm-objects.lst</file>
+  </policy>
+  <policy date="2026-06-03 19:38" id="21-004"/>
+  <policy date="2026-06-03 19:38" id="26-002">
+    <file>monitor-teams/MonitorTeams.hxx</file>
+    <file>ufo-dynamics/UFODynamics.hxx</file>
+    <file>compass/Compass.hxx</file>
+  </policy>
+  <policy date="2026-06-03 19:38" id="26-003">
+    <file>monitor-teams/MonitorTeams.cxx</file>
+    <file>ufo-dynamics/UFODynamics.cxx</file>
+    <file>compass/Compass.cxx</file>
+  </policy>
 </policies>
