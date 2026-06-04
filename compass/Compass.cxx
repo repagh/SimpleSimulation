@@ -26,6 +26,7 @@
 
 #define DO_INSTANTIATE
 #include <dueca/dueca.h>
+using namespace std;
 
 // This is a DUECA-typical debug printer,
 #define DEBPRINTLEVEL -1

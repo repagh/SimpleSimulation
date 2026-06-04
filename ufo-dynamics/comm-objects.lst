@@ -3,5 +3,6 @@
 # specify these with the .dco extension, examples:
 # SimpleSimulation/comm-objects/MyDataObject.dco
 # Generic/comm-objects/PrimaryControls.dco
-SimpleSimulation/comm-objects/ControlInput.dco
+#SimpleSimulation/comm-objects/ControlInput.dco #  Removed for Policy: 'home-dco':'24-001'
 WorldView/comm-objects/BaseObjectMotion.dco
+comm-objects/ControlInput.dco  # Added for Policy: 'home-dco':'24-001'

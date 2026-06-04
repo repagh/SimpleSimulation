@@ -31,7 +31,7 @@ USING_DUECA_NS;
 
     \verbinclude monitor-teams.scm
  */
-class MonitorTeams: public Module
+class MonitorTeams: public dueca::Module
 {
   /** self-define the module type, to ease writing the parameter table */
   typedef MonitorTeams _ThisModule_;
@@ -47,38 +47,38 @@ private: // simulation data
 
 private: // channel access
   /** Read information from the interconnector on joining/leaving peers */
-  boost::scoped_ptr<ChannelReadToken>  r_announce;
+  boost::scoped_ptr<dueca::ChannelReadToken>  r_announce;
 
   /** Read the current state of the peer ufo's flying around */
-  ChannelReadToken    r_world;
+  dueca::ChannelReadToken    r_world;
 
 private: // activity allocation
   /** You might also need a clock. Don't mis-use this, because it is
       generally better to trigger on the incoming channels */
-  PeriodicAlarm        myclock;
+  dueca::PeriodicAlarm        myclock;
 
-  /** Callback object for simulation calculation. */
-  Callback<MonitorTeams>  cb1;
+  /** dueca::Callback object for simulation calculation. */
+  dueca::Callback<MonitorTeams>  cb1;
 
-  /** Callback object for simulation calculation. */
-  Callback<MonitorTeams>  cb2;
-
-  /** Activity for simulation calculation. */
-  ActivityCallback      do_calc;
+  /** dueca::Callback object for simulation calculation. */
+  dueca::Callback<MonitorTeams>  cb2;
 
   /** Activity for simulation calculation. */
-  ActivityCallback      do_notify;
+  dueca::ActivityCallback      do_calc;
+
+  /** Activity for simulation calculation. */
+  dueca::ActivityCallback      do_notify;
 
 public: // class name and trim/parameter tables
   /** Name of the module. */
   static const char* const           classname;
 
   /** Return the parameter table. */
-  static const ParameterTable*       getMyParameterTable();
+  static const dueca::ParameterTable*       getMyParameterTable();
 
 public: // construction and further specification
   /** Constructor. Is normally called from scheme/the creation script. */
-  MonitorTeams(Entity* e, const char* part, const PrioritySpec& ts);
+  MonitorTeams(dueca::Entity* e, const char* part, const dueca::PrioritySpec& ts);
 
   /** Continued construction. This is called after all script
       parameters have been read and filled in, according to the
@@ -98,7 +98,7 @@ public: // construction and further specification
   // Delete if not needed!
 
   /** Specify a time specification for the simulation activity. */
-  bool setTimeSpec(const TimeSpec& ts);
+  bool setTimeSpec(const dueca::TimeSpec& ts);
 
   /** Request check on the timing. */
   bool checkTiming(const std::vector<int>& i);
@@ -108,14 +108,14 @@ public: // member functions for cooperation with DUECA
   bool isPrepared();
 
   /** start responsiveness to input data. */
-  void startModule(const TimeSpec &time);
+  void startModule(const dueca::TimeSpec &time);
 
   /** stop responsiveness to input data. */
-  void stopModule(const TimeSpec &time);
+  void stopModule(const dueca::TimeSpec &time);
 
 public: // the member functions that are called for activities
   /** the method that implements the main calculation. */
-  void doCalculation(const TimeSpec& ts);
+  void doCalculation(const dueca::TimeSpec& ts);
 
   /** set reader for interlink announements */
   bool checkAnnounce(const bool& c);
@@ -142,7 +142,7 @@ public: // the member functions that are called for activities
 #endif
 
   /** print a notification about a leaving or joining peer */
-  void doNotify(const TimeSpec& ts);
+  void doNotify(const dueca::TimeSpec& ts);
 };
 
 #endif

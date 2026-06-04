@@ -20,6 +20,7 @@
 // the standard package for DUSIME, including template source
 #define DO_INSTANTIATE
 #include <dusime.h>
+using namespace std;
 
 // include the debug writing header. Warning and error messages
 // are on by default, debug and info can be selected by

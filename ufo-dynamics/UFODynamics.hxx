@@ -32,7 +32,7 @@ USING_DUECA_NS;
 
     \verbinclude ufo-dynamics.scm
 */
-class UFODynamics: public SimulationModule
+class UFODynamics: public dueca::SimulationModule
 {
   /** self-define the module type, to ease writing the parameter table */
   typedef UFODynamics _ThisModule_;
@@ -60,40 +60,40 @@ private: // channel access
   // declare access tokens for all the channels you read and write
   // examples:
   /** Control input from the joystick */
-  ChannelReadToken    r_controls;
+  dueca::ChannelReadToken    r_controls;
 
   /** Our viewpoint to send to the world view, drives the location of
       our eyes. */
-  ChannelWriteToken   w_egomotion;
+  dueca::ChannelWriteToken   w_egomotion;
 
   /** For sharing our position to the world view, so in multiplayer we
       can be seen. */
-  ChannelWriteToken   w_world;
+  dueca::ChannelWriteToken   w_world;
 
 private: // activity allocation
   /** You might also need a clock. Don't mis-use this, because it is
       generally better to trigger on the incoming channels */
   //PeriodicAlarm        myclock;
 
-  /** Callback object for simulation calculation. */
-  Callback<UFODynamics>  cb1;
+  /** dueca::Callback object for simulation calculation. */
+  dueca::Callback<UFODynamics>  cb1;
 
   /** Activity for simulation calculation. */
-  ActivityCallback      do_calc;
+  dueca::ActivityCallback      do_calc;
 
 public: // class name and trim/parameter tables
   /** Name of the module. */
   static const char* const           classname;
 
   /** Return the initial condition table. */
-  static const IncoTable*            getMyIncoTable();
+  static const dueca::IncoTable*            getMyIncoTable();
 
   /** Return the parameter table. */
-  static const ParameterTable*       getMyParameterTable();
+  static const dueca::ParameterTable*       getMyParameterTable();
 
 public: // construction and further specification
   /** Constructor. Is normally called from scheme/the creation script. */
-  UFODynamics(Entity* e, const char* part, const PrioritySpec& ts);
+  UFODynamics(dueca::Entity* e, const char* part, const dueca::PrioritySpec& ts);
 
   /** Continued construction. This is called after all script
       parameters have been read and filled in, according to the
@@ -113,7 +113,7 @@ public: // construction and further specification
   // Delete if not needed!
 
   /** Specify a time specification for the simulation activity. */
-  bool setTimeSpec(const TimeSpec& ts);
+  bool setTimeSpec(const dueca::TimeSpec& ts);
 
   /** Request check on the timing. */
   bool checkTiming(const std::vector<int>& i);
@@ -123,25 +123,25 @@ public: // member functions for cooperation with DUECA
   bool isPrepared();
 
   /** start responsiveness to input data. */
-  void startModule(const TimeSpec &time);
+  void startModule(const dueca::TimeSpec &time);
 
   /** stop responsiveness to input data. */
-  void stopModule(const TimeSpec &time);
+  void stopModule(const dueca::TimeSpec &time);
 
 public: // the member functions that are called for activities
   /** the method that implements the main calculation. */
-  void doCalculation(const TimeSpec& ts);
+  void doCalculation(const dueca::TimeSpec& ts);
 
 public: // member functions for cooperation with DUSIME
-  /** For the Snapshot capability, fill the snapshot "snap" with the
+  /** For the dueca::Snapshot capability, fill the snapshot "snap" with the
       data saved at a point in your simulation (if from_trim is false)
       or with the state data calculated in the trim calculation (if
       from_trim is true). */
-  void fillSnapshot(const TimeSpec& ts,
-                    Snapshot& snap, bool from_trim) final;
+  void fillSnapshot(const dueca::TimeSpec& ts,
+                    dueca::Snapshot& snap, bool from_trim) final;
 
   /** Restoring the state of the simulation from a snapshot. */
-  void loadSnapshot(const TimeSpec& t, const Snapshot& snap) final;
+  void loadSnapshot(const dueca::TimeSpec& t, const dueca::Snapshot& snap) final;
 };
 
 #endif
